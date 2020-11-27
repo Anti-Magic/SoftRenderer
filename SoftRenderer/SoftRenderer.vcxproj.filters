@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{19b7d2d5-3b86-46df-96c4-1cb5f09e5ba9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{e9829fe8-ff67-44cd-8558-b7e7e44c65aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{575e5b36-22e1-4a6c-86e2-cd2fec67e6c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine">
+      <UniqueIdentifier>{9709b5e5-eab3-448b-bbf3-b389ff03530d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="example">
+      <UniqueIdentifier>{92c1a356-df4c-47ff-b1d4-0402d77f6a58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third">
+      <UniqueIdentifier>{57dd12c5-2e1d-429f-a8c9-bc07d792805f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Vec.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="Quat.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameBuffer.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="Rasterization.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureCube.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third\glad\src\glad.c">
+      <Filter>third</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third\imgui\backends\imgui_impl_opengl3.cpp">
+      <Filter>third</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third\imgui\backends\imgui_impl_sdl.cpp">
+      <Filter>third</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third\imgui\imgui.cpp">
+      <Filter>third</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third\imgui\imgui_demo.cpp">
+      <Filter>third</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third\imgui\imgui_draw.cpp">
+      <Filter>third</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third\imgui\imgui_widgets.cpp">
+      <Filter>third</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Vec.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="Quat.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="Mathf.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="Rasterization.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderV2F.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameBuffer.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureCube.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshPrimitive.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTest.h">
+      <Filter>example</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderColor.h">
+      <Filter>shader</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderUnlit.h">
+      <Filter>shader</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
