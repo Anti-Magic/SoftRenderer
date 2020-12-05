@@ -13,18 +13,18 @@ namespace SoftRenderer
             Bilinear
         };
 
-        FilterMode filterMode = FilterMode::Bilinear;
+        FilterMode filterMode = FilterMode::Point;
 
         virtual Vec4 getColor(const Vec4& pos) = 0;
 
         inline Vec4 getColor(const Vec3& pos)
         {
-            return Vec4(pos, 0);
+            return getColor(Vec4(pos, 0));
         }
 
         inline Vec4 getColor(const Vec2& pos)
         {
-            return Vec4(pos, 0, 0);
+            return getColor(Vec4(pos, 0, 0));
         }
     };
 }

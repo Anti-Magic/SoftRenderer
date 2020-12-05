@@ -34,5 +34,17 @@ namespace SoftRenderer
             texcoord2 = lerp(a.texcoord2, b.texcoord2, t);
             texcoord3 = lerp(a.texcoord3, b.texcoord3, t);
         }
+
+        static ShaderV2F lerpV2F(const ShaderV2F& a, const ShaderV2F& b, float t)
+        {
+            ShaderV2F o;
+            o.position = lerp(a.position, b.position, t);
+            o.normal = lerp(a.normal, b.normal, t);
+            o.texcoord0 = lerp(a.texcoord0, b.texcoord0, t);
+            o.texcoord1 = lerp(a.texcoord1, b.texcoord1, t);
+            o.texcoord2 = lerp(a.texcoord2, b.texcoord2, t);
+            o.texcoord3 = lerp(a.texcoord3, b.texcoord3, t);
+            return o;
+        }
     };
 }

@@ -74,9 +74,9 @@ namespace SoftRenderer
 	Mat4 Mat4::translate(Vec3 v)
 	{
 		return Mat4(
-			1, 0, 0, 0,
-			0, 1, 0, 0,
-			0, 0, 1, 0,
+			1,   0,   0,   0,
+			0,   1,   0,   0,
+			0,   0,   1,   0,
 			v.x, v.y, v.z, 1);
 	}
 
@@ -130,10 +130,10 @@ namespace SoftRenderer
 	Mat4 Mat4::scale(Vec3 v)
 	{
 		return Mat4(
-			v.x, 0, 0, 0,
-			0, v.y, 0, 0,
-			0, 0, v.z, 0,
-			0, 0, 0, 1);
+			v.x, 0,   0,   0,
+			0,   v.y, 0,   0,
+			0,   0,   v.z, 0,
+			0,   0,   0,   1);
 	}
 
 	Mat4 Mat4::lookAt(Vec3 eye, Vec3 center, Vec3 up)
@@ -148,24 +148,35 @@ namespace SoftRenderer
 			xAxis.x, yAxis.x, zAxis.x, 0,
 			xAxis.y, yAxis.y, zAxis.y, 0,
 			xAxis.z, yAxis.z, zAxis.z, 0,
-			tx, ty, tz, 1);
+			tx,      ty,      tz,      1);
 	}
 
 	Mat4 Mat4::perspective(float fovy, float aspect, float zNear, float zFar)
 	{
-		float t = 1.0f / std::tan(fovy * 0.5f);
-		Mat4 res;
-		res.d[0][0] = t / aspect;
-		res.d[1][1] = t;
-		res.d[2][3] = 1.0f;
-		res.d[3][3] = 0.0f;
-		// [-1, 1]
-		// res.d[2][2] = (zFar + zNear) / (zFar - zNear);
-		// res.d[3][2] = (-2.0 * zFar * zNear) / (zFar - zNear);
-		// [0, 1]
-		res.d[2][2] = zFar / (zFar - zNear);
-		res.d[3][2] = -(zFar * zNear) / (zFar - zNear);
-		return res;
+		float yScale = 1.0f / std::tan(fovy * 0.5f); // cot(fovy/2)
+		float xScale = yScale / aspect;
+		float zRange = zFar - zNear;
+		float zScale = zFar / zRange;
+		float zTranslate = -zNear * zFar / zRange;
+		return Mat4(
+			xScale, 0,      0,          0,
+			0,      yScale, 0,          0,
+			0,      0,      zScale,     1,
+			0,      0,      zTranslate, 0);
+	}
+
+	Mat4 Mat4::ortho(float width, float height, float zNear, float zFar)
+	{
+		float yScale = 2.0f / height;
+		float xScale = 2.0f / width;
+		float zRange = zFar - zNear;
+		float zScale = 1.0f / zRange;
+		float zTranslate = -zNear / zRange;
+		return Mat4(
+			xScale, 0,      0,          0,
+			0,      yScale, 0,          0,
+			0,      0,      zScale,     0,
+			0,      0,      zTranslate, 1);
 	}
 
 	Mat4 operator*(Mat4 left, Mat4 right)

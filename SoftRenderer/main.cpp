@@ -10,6 +10,7 @@
 #include "Mathf.h"
 #include "Device.h"
 #include "SceneTest.h"
+#include "SceneTest2.h"
 
 using namespace SoftRenderer;
 
@@ -93,31 +94,6 @@ public:
                 buffer[index + 1] = floor(src[index + 1] * 255);
                 buffer[index + 2] = floor(src[index + 2] * 255);
                 buffer[index + 3] = floor(src[index + 3] * 255);
-            }
-        }
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-
-        // render container
-        glUseProgram(shaderID);
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    }
-
-    void render2()
-    {
-        // bind textures on corresponding texture units
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureID);
-
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                int dstIndex = (x + y * width) * 4;
-                buffer[dstIndex] = 255;
-                buffer[dstIndex + 1] = 0;
-                buffer[dstIndex + 2] = 0;
-                buffer[dstIndex + 3] = 255;
             }
         }
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
@@ -214,17 +190,14 @@ private:
     {
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
-        // set the texture wrapping parameters
+        // texture wrapping
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        // set texture filtering parameters
+        // texture filtering
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-        // -------------------------------------------------------------------------------------------
         glUseProgram(shaderID);
-        // either set it manually like so:
         glUniform1i(glGetUniformLocation(shaderID, "tex"), 0);
     }
 
@@ -233,9 +206,7 @@ private:
         return R"(#version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoord;
-
 out vec2 TexCoord;
-
 void main()
 {
 	gl_Position = vec4(aPos, 1.0);
@@ -248,12 +219,8 @@ void main()
     {
         return R"(#version 330 core
 out vec4 FragColor;
-
 in vec2 TexCoord;
-
-// texture samplers
 uniform sampler2D tex;
-
 void main()
 {
 	FragColor = texture(tex, TexCoord);
@@ -262,14 +229,28 @@ void main()
     }
 };
 
+KeyCode SDLKeyConvert(SDL_Keycode key)
+{
+    switch (key)
+    {
+    case SDLK_w:
+        return KeyCode::W;
+    case SDLK_a:
+        return KeyCode::A;
+    case SDLK_s:
+        return KeyCode::S;
+    case SDLK_d:
+        return KeyCode::D;
+    default:
+        return KeyCode::Unknown;
+    }
+}
+
 int main(int argc, char* argv[])
 {
     int width = 854;
     int height = 480;
 
-    // Setup SDL
-    // (Some versions of SDL before <2.0.10 appears to have performance/stalling issues on a minority of Windows systems,
-    // depending on whether SDL_INIT_GAMECONTROLLER is enabled or disabled.. updating to latest version of SDL is recommended!)
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
         printf("Error: %s\n", SDL_GetError());
@@ -293,7 +274,7 @@ int main(int argc, char* argv[])
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #endif
 
-    // Create window with graphics context
+    // Create window
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
@@ -318,10 +299,6 @@ int main(int argc, char* argv[])
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
-    // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsClassic();
 
@@ -333,26 +310,48 @@ int main(int argc, char* argv[])
     std::shared_ptr<Device> device = std::make_shared<Device>(Vec2(width, height));
     device->LoadTexture2D = LoadTexture2D;
     device->LoadMesh = LoadMesh;
-    device->SetScene(std::make_shared<SceneTest>(device));
+    device->setScene(std::make_shared<SceneTest2>(device));
 
-    // Main loop
+    // main loop
     uint32_t lastTime = SDL_GetTicks();
     bool done = false;
     while (!done)
     {
-        // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
             if (event.type == SDL_QUIT)
+            {
                 done = true;
-            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
-                done = true;
+            }
+            else if (event.type == SDL_WINDOWEVENT)
+            {
+                if (event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
+                {
+                    done = true;
+                }
+            }
+            else if (event.type == SDL_KEYDOWN)
+            {
+                device->onKeyDown(SDLKeyConvert(event.key.keysym.sym));
+            }
+            else if (event.type == SDL_KEYUP)
+            {
+                device->onKeyUp(SDLKeyConvert(event.key.keysym.sym));
+            }
+            else if (event.type == SDL_MOUSEBUTTONDOWN)
+            {
+
+            }
+            else if (event.type == SDL_MOUSEBUTTONUP)
+            {
+
+            }
+            else if (event.type == SDL_MOUSEMOTION)
+            {
+
+            }
         }
 
         // Start the Dear ImGui frame
@@ -368,9 +367,8 @@ int main(int argc, char* argv[])
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        tr.render(device->frameBuffer.color.d);
+        tr.render(device->frameBuffer.color->d);
 
-        // Rendering
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(window);

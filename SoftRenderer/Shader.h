@@ -12,7 +12,7 @@ namespace SoftRenderer
     {
     public:
         Vec4 ambient;
-        Vec4 dir;
+        Vec3 dir;
         Vec4 color;
     };
 
@@ -29,7 +29,11 @@ namespace SoftRenderer
         std::shared_ptr<Texture> texture0;
         std::shared_ptr<Texture> texture1;
 
-        virtual void vert(const Vertex& v, ShaderV2F& o) = 0;
+        Mat4 uniformM0;
+        Vec4 uniformV0;
+        Vec4 uniformV1;
+
+        virtual ShaderV2F vert(const Vertex& v) = 0;
         virtual Vec4 frag(const ShaderV2F& f) = 0;
     };
 }

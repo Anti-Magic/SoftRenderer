@@ -2,6 +2,7 @@
 
 #include "Mathf.h"
 #include "Texture2D.h"
+#include <memory>
 
 namespace SoftRenderer
 {
@@ -9,7 +10,7 @@ namespace SoftRenderer
     {
     public:
         Vec2 size;
-        Texture2D color;
+        std::shared_ptr<Texture2D> color;
         std::vector<float> depth;
         std::vector<float> stencil;
 

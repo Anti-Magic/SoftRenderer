@@ -27,6 +27,7 @@ namespace SoftRenderer
 		static Mat4 scale(Vec3 v);
 		static Mat4 lookAt(Vec3 eye, Vec3 center, Vec3 up);
 		static Mat4 perspective(float fovy, float aspect, float zNear, float zFar);
+		static Mat4 ortho(float width, float height, float zNear, float zFar);
 
 		friend Mat4 operator*(Mat4 left, Mat4 right);
 	};

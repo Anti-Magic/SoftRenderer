@@ -4,8 +4,8 @@ namespace SoftRenderer
 {
     FrameBuffer::FrameBuffer(const Vec2& _size)
         : size(_size)
-        , color(_size, Vec4(0, 0, 0, 1))
-        , depth(_size.x * _size.y, 0)
+        , color(std::make_shared<Texture2D>(_size, Vec4(0, 0, 0, 1)))
+        , depth(_size.x * _size.y, 1)
         , stencil(_size.x * _size.y, 0)
     {
     }
@@ -14,11 +14,11 @@ namespace SoftRenderer
     {
         for (size_t i = 0; i < depth.size(); i++)
         {
-            color.d[i * 4] = _color.x;
-            color.d[i * 4 + 1] = _color.y;
-            color.d[i * 4 + 2] = _color.z;
-            color.d[i * 4 + 3] = _color.w;
-            depth[i] = 0;
+            color->d[i * 4] = _color.x;
+            color->d[i * 4 + 1] = _color.y;
+            color->d[i * 4 + 2] = _color.z;
+            color->d[i * 4 + 3] = _color.w;
+            depth[i] = 1;
             stencil[i] = 0;
         }
     }
@@ -31,16 +31,16 @@ namespace SoftRenderer
         }
 
         int index = (x + y * size.x) * 4;
-        color.d[index] = value.x;
-        color.d[index + 1] = value.y;
-        color.d[index + 2] = value.z;
-        color.d[index + 3] = value.w;
+        color->d[index] = value.x;
+        color->d[index + 1] = value.y;
+        color->d[index + 2] = value.z;
+        color->d[index + 3] = value.w;
     }
 
     Vec4 FrameBuffer::getColor(int x, int y)
     {
         int index = (x + y * size.x) * 4;
-        return Vec4(color.d[index], color.d[index + 1], color.d[index + 2], color.d[index + 3]);
+        return Vec4(color->d[index], color->d[index + 1], color->d[index + 2], color->d[index + 3]);
     }
 
     void FrameBuffer::setDepth(int x, int y, float value)

@@ -154,18 +154,27 @@
     <ClCompile Include="..\third\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\third\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\third\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="ClippingPlane.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mat.cpp" />
     <ClCompile Include="Quat.cpp" />
     <ClCompile Include="Rasterization.cpp" />
+    <ClCompile Include="RasterizerBaryCoord.cpp" />
+    <ClCompile Include="RasterizerScanline.cpp" />
+    <ClCompile Include="RasterizerWireframe.cpp" />
+    <ClCompile Include="RasterPipeline.cpp" />
+    <ClCompile Include="ScreenPostProcesser.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="TextureCube.cpp" />
     <ClCompile Include="Vec.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="ClippingPlane.h" />
     <ClInclude Include="Device.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="Mat.h" />
     <ClInclude Include="Mathf.h" />
@@ -173,10 +182,18 @@
     <ClInclude Include="MeshPrimitive.h" />
     <ClInclude Include="Quat.h" />
     <ClInclude Include="Rasterization.h" />
+    <ClInclude Include="RasterizerBaryCoord.h" />
+    <ClInclude Include="RasterizerScanline.h" />
+    <ClInclude Include="RasterizerWireframe.h" />
+    <ClInclude Include="RasterPipeline.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneTest.h" />
+    <ClInclude Include="SceneTest2.h" />
+    <ClInclude Include="ScreenPostProcesser.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderColor.h" />
+    <ClInclude Include="ShaderDepth.h" />
+    <ClInclude Include="ShaderShadowRecv.h" />
     <ClInclude Include="ShaderUnlit.h" />
     <ClInclude Include="ShaderV2F.h" />
     <ClInclude Include="Texture.h" />

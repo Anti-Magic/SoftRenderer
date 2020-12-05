@@ -19,7 +19,7 @@ namespace SoftRenderer
     Vec4 Texture2D::getColor(const Vec4& pos)
     {
         float x = pos.x * size.x;
-        float y = (1 - pos.y) * size.y;
+        float y = pos.y * size.y;
         x = clamp(x, 0.0f, size.x - 1);
         y = clamp(y, 0.0f, size.y - 1);
         if (filterMode == FilterMode::Point)

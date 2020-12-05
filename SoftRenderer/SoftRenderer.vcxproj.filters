@@ -81,6 +81,24 @@
     <ClCompile Include="..\third\imgui\imgui_widgets.cpp">
       <Filter>third</Filter>
     </ClCompile>
+    <ClCompile Include="ScreenPostProcesser.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterPipeline.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizerWireframe.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizerScanline.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizerBaryCoord.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="ClippingPlane.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vec.h">
@@ -139,6 +157,39 @@
     </ClInclude>
     <ClInclude Include="ShaderUnlit.h">
       <Filter>shader</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderDepth.h">
+      <Filter>shader</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderShadowRecv.h">
+      <Filter>shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenPostProcesser.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTest2.h">
+      <Filter>example</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterPipeline.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizerWireframe.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizerScanline.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizerBaryCoord.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="ClippingPlane.h">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
