@@ -1,12 +1,18 @@
 #include "RasterizerScanLine.h"
+#include "RasterState.h"
 #include "FrameBuffer.h"
 #include "Shader.h"
 #include "Mesh.h"
 
 namespace SoftRenderer 
 {
-    void RasterizerScanline::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, ShaderV2F& v0, ShaderV2F& v1, ShaderV2F& v2)
+    void RasterizerScanline::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, ShaderV2F v0, ShaderV2F v1, ShaderV2F v2, const RasterState& rState)
     {
+        if ((rState.rasterMode & RasterMode::Fill) == RasterMode::None)
+        {
+            return;
+        }
+
         // 透视除法
         v0.position.x /= v0.position.w;
         v0.position.y /= v0.position.w;
@@ -20,10 +26,24 @@ namespace SoftRenderer
         v2.position.y /= v2.position.w;
         v2.position.z /= v2.position.w;
 
+        // backface culling
+        if (rState.cullType != FaceCulling::None)
+        {
+            Vec2 dir01(v1.position.x - v0.position.x, v1.position.y - v0.position.y);
+            Vec2 dir02(v2.position.x - v0.position.x, v2.position.y - v0.position.y);
+            if (dir01.x * dir02.y - dir01.y * dir02.x > 0)
+            {
+                return;
+            }
+        }
+
         // 透视插值
-        v0.mul(1.0f / v0.position.w);
-        v1.mul(1.0f / v1.position.w);
-        v2.mul(1.0f / v2.position.w);
+        v0.position.w = 1.0f / v0.position.w;
+        v1.position.w = 1.0f / v1.position.w;
+        v2.position.w = 1.0f / v2.position.w;
+        v0.perspectiveCorrect(v0.position.w);
+        v1.perspectiveCorrect(v1.position.w);
+        v2.perspectiveCorrect(v2.position.w);
 
         // viewport
         v0.position.x = (v0.position.x + 1) * 0.5f * fbo.size.x;
@@ -46,7 +66,7 @@ namespace SoftRenderer
             {
                 std::swap(v0, v1);
             }
-            drawFlatBotTriangle(fbo, shader, v0, v1, v2);
+            drawFlatBotTriangle(fbo, shader, v0, v1, v2, rState);
         }
         else if (v1.position.y == v2.position.y)
         {
@@ -54,7 +74,7 @@ namespace SoftRenderer
             {
                 std::swap(v1, v2);
             }
-            drawFlatTopTriangle(fbo, shader, v0, v1, v2);
+            drawFlatTopTriangle(fbo, shader, v0, v1, v2, rState);
         }
         else
         {
@@ -64,23 +84,23 @@ namespace SoftRenderer
             if (v1.position.x > pEx.x)
             {
                 std::swap(v1, v2);
-                drawFlatTopTriangle(fbo, shader, v0, v1, v2);
+                drawFlatTopTriangle(fbo, shader, v0, v1, v2, rState);
                 std::swap(v1, v2);
             }
             else
             {
-                drawFlatTopTriangle(fbo, shader, v0, v1, v2);
+                drawFlatTopTriangle(fbo, shader, v0, v1, v2, rState);
             }
 
             if (pEx.x > v1.position.x)
             {
                 std::swap(v0, v1);
             }
-            drawFlatBotTriangle(fbo, shader, v0, v1, v2);
+            drawFlatBotTriangle(fbo, shader, v0, v1, v2, rState);
         }
     }
 
-    void RasterizerScanline::drawFlatTopTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2)
+    void RasterizerScanline::drawFlatTopTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2, const RasterState& rState)
     {
         //  1-------2
         //   \     /
@@ -95,17 +115,13 @@ namespace SoftRenderer
         int loopHigh = clamp(ye, 0.0f, fbo.size.y);
         for (int y = loopLow; y < loopHigh; y++)
         {
-            ShaderV2F vl = ShaderV2F::lerpV2F(v0, v1, (y - ys) / (yel - ys));
-            ShaderV2F vr = ShaderV2F::lerpV2F(v0, v2, (y - ys) / (yer - ys));
-            drawScanline(fbo, shader, vl, vr, y);
+            ShaderV2F vl = ShaderV2F::lerp(v0, v1, (y - ys) / (yel - ys));
+            ShaderV2F vr = ShaderV2F::lerp(v0, v2, (y - ys) / (yer - ys));
+            drawScanline(fbo, shader, vl, vr, y, rState);
         }
-
-        //drawLine(fbo, v0.position, v1.position);
-        //drawLine(fbo, v1.position, v2.position);
-        //drawLine(fbo, v2.position, v0.position);
     }
 
-    void RasterizerScanline::drawFlatBotTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2)
+    void RasterizerScanline::drawFlatBotTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2, const RasterState& rState)
     {
         //      2
         //     / \
@@ -120,17 +136,13 @@ namespace SoftRenderer
         int loopHigh = clamp(ye, 0.0f, fbo.size.y);
         for (int y = loopLow; y < loopHigh; y++)
         {
-            ShaderV2F vl = ShaderV2F::lerpV2F(v2, v0, (ye - y) / (ye - ysl));
-            ShaderV2F vr = ShaderV2F::lerpV2F(v2, v1, (ye - y) / (ye - ysr));
-            drawScanline(fbo, shader, vl, vr, y);
+            ShaderV2F vl = ShaderV2F::lerp(v2, v0, (ye - y) / (ye - ysl));
+            ShaderV2F vr = ShaderV2F::lerp(v2, v1, (ye - y) / (ye - ysr));
+            drawScanline(fbo, shader, vl, vr, y, rState);
         }
-
-        //drawLine(fbo, v0.position, v1.position);
-        //drawLine(fbo, v1.position, v2.position);
-        //drawLine(fbo, v2.position, v0.position);
     }
 
-    void RasterizerScanline::drawScanline(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const ShaderV2F& vl, const ShaderV2F& vr, int y)
+    void RasterizerScanline::drawScanline(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const ShaderV2F& vl, const ShaderV2F& vr, int y, const RasterState& rState)
     {
         float xs = floor(vl.position.x);
         float xe = floor(vr.position.x);
@@ -138,28 +150,19 @@ namespace SoftRenderer
         int loopHigh = clamp(xe, 0.0f, fbo.size.x);
         for (int x = loopLow; x < loopHigh; x++)
         {
-            float t = (x - xs) / (xe - xs);
-            ShaderV2F vm = ShaderV2F::lerpV2F(vl, vr, t);
-            if (depthTest(vm.position.z, fbo.getDepth(x, y)))
+            ShaderV2F vm = ShaderV2F::lerp(vl, vr, (x - xs) / (xe - xs));
+            float depth = vm.position.z;
+            if (!rState.enableDepthTest || rState.depthTestFunc(depth, fbo.getDepth(x, y)))
             {
-                vm.mul(vm.position.w);
+                vm.perspectiveCorrect(1.0f / vm.position.w);
                 Vec4 color = shader->frag(vm);
-                color = alphaBlend(color, fbo.getColor(x, y));
+                color = rState.alphaBlendFunc(color, fbo.getColor(x, y));
                 fbo.setColor(x, y, color);
-                fbo.setDepth(x, y, vm.position.z);
+                if (rState.enableDepthWrite)
+                {
+                    fbo.setDepth(x, y, depth);
+                }
             }
         }
-    }
-
-    bool RasterizerScanline::depthTest(float src, float dst)
-    {
-        //return src <= 1 && src >= dst;
-        return src <= dst;
-    }
-
-    Vec4 RasterizerScanline::alphaBlend(const Vec4& src, const Vec4& dst)
-    {
-        float alpha = src.w;
-        return Vec4(src.x * alpha + dst.x * (1 - alpha), src.y * alpha + dst.y * (1 - alpha), src.z * alpha + dst.z * (1 - alpha), 1);
     }
 }

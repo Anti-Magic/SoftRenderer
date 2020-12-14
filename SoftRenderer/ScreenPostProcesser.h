@@ -4,6 +4,7 @@
 #include "Texture2D.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "RasterState.h"
 #include <memory>
 
 namespace SoftRenderer
@@ -16,6 +17,7 @@ namespace SoftRenderer
 		static std::unique_ptr<Shader> defaultShader;
 	
 	private:
+		static RasterState rState;
 		static Mesh mesh;
 	};
 }

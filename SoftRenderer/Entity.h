@@ -61,6 +61,21 @@ namespace SoftRenderer
             setRot(Quat::fromMat4(viewMat.inverse()));
         }
 
+        Vec3 right()
+        {
+            return Vec3(1, 0, 0) * rot;
+        }
+
+        Vec3 up()
+        {
+            return Vec3(0, 1, 0) * rot;
+        }
+
+        Vec3 forward()
+        {
+            return Vec3(0, 0, 1) * rot;
+        }
+
         virtual Mat4 getModelMatrix()
         {
             if (transformDirty)

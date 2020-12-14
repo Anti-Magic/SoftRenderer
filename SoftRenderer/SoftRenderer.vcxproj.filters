@@ -48,9 +48,6 @@
     <ClCompile Include="FrameBuffer.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="Rasterization.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="Texture2D.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -99,6 +96,9 @@
     <ClCompile Include="ClippingPlane.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="RasterState.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vec.h">
@@ -112,9 +112,6 @@
     </ClInclude>
     <ClInclude Include="Mathf.h">
       <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="Rasterization.h">
-      <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>core</Filter>
@@ -189,6 +186,12 @@
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="ClippingPlane.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderSkybox.h">
+      <Filter>shader</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterState.h">
       <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>

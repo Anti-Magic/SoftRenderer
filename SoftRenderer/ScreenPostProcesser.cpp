@@ -34,6 +34,7 @@ namespace SoftRenderer
 
     std::unique_ptr<Shader> ScreenPostProcesser::defaultShader(std::make_unique<ShaderUnlit>());
     Mesh ScreenPostProcesser::mesh(quad());
+    RasterState ScreenPostProcesser::rState;
 
 	void ScreenPostProcesser::render(FrameBuffer& src, FrameBuffer& dst, std::unique_ptr<Shader>& shader)
 	{
@@ -43,6 +44,6 @@ namespace SoftRenderer
     void ScreenPostProcesser::render(std::shared_ptr<Texture2D> src, FrameBuffer& dst, std::unique_ptr<Shader>& shader)
 	{
         shader->texture0 = src;
-        RasterPipeline::drawTriangles(dst, shader, quad());
+        RasterPipeline::drawTriangles(dst, shader, quad(), rState);
 	}
 }

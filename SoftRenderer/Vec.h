@@ -5,6 +5,7 @@
 namespace SoftRenderer
 {
 	class Mat4;
+	class Quat;
 
 	class Vec2
 	{
@@ -49,6 +50,7 @@ namespace SoftRenderer
 
 		friend Vec3 operator*(const Vec3& left, float right);
 		friend Vec3 operator*(float left, const Vec3& right);
+		friend Vec3 operator*(const Vec3& left, const Quat& right);
 	};
 
 	class Vec4
@@ -62,6 +64,9 @@ namespace SoftRenderer
 		Vec4(float _x = 0, float _y = 0, float _z = 0, float _w = 0);
 		Vec4(const Vec2& v, float _z = 0, float _w = 0);
 		Vec4(const Vec3& v, float _w = 0);
+
+		Vec2 toVec2();
+		Vec3 toVec3();
 
 		float magnitude();
 		Vec4 normalize();

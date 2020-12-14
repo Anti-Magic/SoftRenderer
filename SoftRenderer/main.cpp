@@ -14,28 +14,28 @@
 
 using namespace SoftRenderer;
 
-static Texture2D LoadTexture2D(const std::string& path, bool isFlipY)
+static std::shared_ptr<Texture2D> LoadTexture2D(const std::string& path, bool isFlipY)
 {
     SDL_Surface* img = IMG_Load(path.c_str());
     uint8_t* src = (uint8_t*)img->pixels;
-    Texture2D res(Vec2(img->w, img->h), Vec4());
+    std::shared_ptr<Texture2D> res = std::make_shared<Texture2D>(Vec2(img->w, img->h), Vec4());
     uint8_t r, g, b, a;
-    for (int y = 0; y < res.size.y; y++)
+    for (int y = 0; y < res->size.y; y++)
     {
-        for (int x = 0; x < res.size.x; x++)
+        for (int x = 0; x < res->size.x; x++)
         {
             int srcIndex = (x + y * img->w) * img->format->BytesPerPixel;
             if (isFlipY)
             {
                 srcIndex = (x + (img->h - y - 1) * img->w) * img->format->BytesPerPixel;
             }
-            int dstIndex = (x + y * res.size.x) * 4;
+            int dstIndex = (x + y * res->size.x) * 4;
             uint32_t* pixel = (uint32_t*)(src + srcIndex);
             SDL_GetRGBA(*pixel, img->format, &r, &g, &b, &a);
-            res.d[dstIndex] = r / 255.0f;
-            res.d[dstIndex + 1] = g / 255.0f;
-            res.d[dstIndex + 2] = b / 255.0f;
-            res.d[dstIndex + 3] = a / 255.0f;
+            res->d[dstIndex] = r / 255.0f;
+            res->d[dstIndex + 1] = g / 255.0f;
+            res->d[dstIndex + 2] = b / 255.0f;
+            res->d[dstIndex + 3] = a / 255.0f;
         }
     }
     return res;
@@ -233,6 +233,8 @@ KeyCode SDLKeyConvert(SDL_Keycode key)
 {
     switch (key)
     {
+    case SDLK_SPACE:
+        return KeyCode::Space;
     case SDLK_w:
         return KeyCode::W;
     case SDLK_a:
@@ -241,8 +243,27 @@ KeyCode SDLKeyConvert(SDL_Keycode key)
         return KeyCode::S;
     case SDLK_d:
         return KeyCode::D;
+    case SDLK_q:
+        return KeyCode::Q;
+    case SDLK_e:
+        return KeyCode::E;
     default:
         return KeyCode::Unknown;
+    }
+}
+
+MouseButton SDLMouseConvert(int b)
+{
+    switch (b)
+    {
+    case SDL_BUTTON_LEFT:
+        return MouseButton::Left;
+    case SDL_BUTTON_MIDDLE:
+        return MouseButton::Middle;
+    case SDL_BUTTON_RIGHT:
+        return MouseButton::Right;
+    default:
+        return MouseButton::None;
     }
 }
 
@@ -310,7 +331,7 @@ int main(int argc, char* argv[])
     std::shared_ptr<Device> device = std::make_shared<Device>(Vec2(width, height));
     device->LoadTexture2D = LoadTexture2D;
     device->LoadMesh = LoadMesh;
-    device->setScene(std::make_shared<SceneTest2>(device));
+    device->setScene(std::make_shared<SceneTest>(device));
 
     // main loop
     uint32_t lastTime = SDL_GetTicks();
@@ -342,15 +363,15 @@ int main(int argc, char* argv[])
             }
             else if (event.type == SDL_MOUSEBUTTONDOWN)
             {
-
+                device->onMouseDown(SDLMouseConvert(event.button.button));
             }
             else if (event.type == SDL_MOUSEBUTTONUP)
             {
-
+                device->onMouseUp(SDLMouseConvert(event.button.button));
             }
             else if (event.type == SDL_MOUSEMOTION)
             {
-
+                device->onMouseMotion(Vec2(event.motion.x, event.motion.y));
             }
         }
 

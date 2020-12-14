@@ -1,5 +1,6 @@
 #include "Vec.h"
 #include "Mat.h"
+#include "Quat.h"
 #include <cmath>
 
 namespace SoftRenderer
@@ -114,6 +115,14 @@ namespace SoftRenderer
 		return Vec3(left * right.x, left * right.y, left * right.z);
 	}
 
+	Vec3 operator*(const Vec3& left, const Quat& right)
+	{
+		Vec3 qVec(right.x, right.y, right.z);
+		Vec3 uv(qVec.cross(left));
+		Vec3 uuv(qVec.cross(uv));
+		return left + ((uv * right.w) + uuv) * 2;
+	}
+
 	Vec4::Vec4(float _x, float _y, float _z, float _w)
 		: x(_x), y(_y), z(_z), w(_w)
 	{
@@ -127,6 +136,16 @@ namespace SoftRenderer
 	Vec4::Vec4(const Vec3& v, float _w)
 		: x(v.x), y(v.y), z(v.z), w(_w)
 	{
+	}
+
+	Vec2 Vec4::toVec2()
+	{
+		return Vec2(x, y);
+	}
+
+	Vec3 Vec4::toVec3()
+	{
+		return Vec3(x, y, z);
 	}
 
 	float Vec4::magnitude()

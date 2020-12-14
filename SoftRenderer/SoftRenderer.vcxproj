@@ -89,6 +89,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)third\SDL2-2.0.12\include;$(SolutionDir)third\SDL2_image-2.0.5\include;$(SolutionDir)third\imgui;$(SolutionDir)third\glad\include;$(SolutionDir)third\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>false</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -106,6 +107,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)third\SDL2-2.0.12\include;$(SolutionDir)third\SDL2_image-2.0.5\include;$(SolutionDir)third\imgui;$(SolutionDir)third\glad\include;$(SolutionDir)third\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>false</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -160,11 +162,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mat.cpp" />
     <ClCompile Include="Quat.cpp" />
-    <ClCompile Include="Rasterization.cpp" />
     <ClCompile Include="RasterizerBaryCoord.cpp" />
     <ClCompile Include="RasterizerScanline.cpp" />
     <ClCompile Include="RasterizerWireframe.cpp" />
     <ClCompile Include="RasterPipeline.cpp" />
+    <ClCompile Include="RasterState.cpp" />
     <ClCompile Include="ScreenPostProcesser.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="TextureCube.cpp" />
@@ -181,11 +183,11 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshPrimitive.h" />
     <ClInclude Include="Quat.h" />
-    <ClInclude Include="Rasterization.h" />
     <ClInclude Include="RasterizerBaryCoord.h" />
     <ClInclude Include="RasterizerScanline.h" />
     <ClInclude Include="RasterizerWireframe.h" />
     <ClInclude Include="RasterPipeline.h" />
+    <ClInclude Include="RasterState.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneTest.h" />
     <ClInclude Include="SceneTest2.h" />
@@ -194,6 +196,7 @@
     <ClInclude Include="ShaderColor.h" />
     <ClInclude Include="ShaderDepth.h" />
     <ClInclude Include="ShaderShadowRecv.h" />
+    <ClInclude Include="ShaderSkybox.h" />
     <ClInclude Include="ShaderUnlit.h" />
     <ClInclude Include="ShaderV2F.h" />
     <ClInclude Include="Texture.h" />
