@@ -8,53 +8,6 @@ namespace SoftRenderer
 {
     void RasterizerScanline::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, ShaderV2F v0, ShaderV2F v1, ShaderV2F v2, const RasterState& rState)
     {
-        if ((rState.rasterMode & RasterMode::Fill) == RasterMode::None)
-        {
-            return;
-        }
-
-        // 透视除法
-        v0.position.x /= v0.position.w;
-        v0.position.y /= v0.position.w;
-        v0.position.z /= v0.position.w;
-
-        v1.position.x /= v1.position.w;
-        v1.position.y /= v1.position.w;
-        v1.position.z /= v1.position.w;
-
-        v2.position.x /= v2.position.w;
-        v2.position.y /= v2.position.w;
-        v2.position.z /= v2.position.w;
-
-        // backface culling
-        if (rState.cullType != FaceCulling::None)
-        {
-            Vec2 dir01(v1.position.x - v0.position.x, v1.position.y - v0.position.y);
-            Vec2 dir02(v2.position.x - v0.position.x, v2.position.y - v0.position.y);
-            if (dir01.x * dir02.y - dir01.y * dir02.x > 0)
-            {
-                return;
-            }
-        }
-
-        // 透视插值
-        v0.position.w = 1.0f / v0.position.w;
-        v1.position.w = 1.0f / v1.position.w;
-        v2.position.w = 1.0f / v2.position.w;
-        v0.perspectiveCorrect(v0.position.w);
-        v1.perspectiveCorrect(v1.position.w);
-        v2.perspectiveCorrect(v2.position.w);
-
-        // viewport
-        v0.position.x = (v0.position.x + 1) * 0.5f * fbo.size.x;
-        v0.position.y = (v0.position.y + 1) * 0.5f * fbo.size.y;
-
-        v1.position.x = (v1.position.x + 1) * 0.5f * fbo.size.x;
-        v1.position.y = (v1.position.y + 1) * 0.5f * fbo.size.y;
-
-        v2.position.x = (v2.position.x + 1) * 0.5f * fbo.size.x;
-        v2.position.y = (v2.position.y + 1) * 0.5f * fbo.size.y;
-
         // y sort
         if (v0.position.y > v1.position.y) std::swap(v0, v1);
         if (v1.position.y > v2.position.y) std::swap(v1, v2);

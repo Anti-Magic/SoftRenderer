@@ -59,37 +59,6 @@ namespace SoftRenderer
 
     void RasterizerWireframe::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, ShaderV2F v0, ShaderV2F v1, ShaderV2F v2, const RasterState& rState)
     {
-        if ((rState.rasterMode & RasterMode::Wireframe) == RasterMode::None)
-        {
-            return;
-        }
-
-        // Í¸ÊÓ³ý·¨
-        v0.position.x /= v0.position.w;
-        v0.position.y /= v0.position.w;
-        v0.position.z /= v0.position.w;
-        v0.position.w = 1.0f / v0.position.w;
-
-        v1.position.x /= v1.position.w;
-        v1.position.y /= v1.position.w;
-        v1.position.z /= v1.position.w;
-        v1.position.w = 1.0f / v1.position.w;
-
-        v2.position.x /= v2.position.w;
-        v2.position.y /= v2.position.w;
-        v2.position.z /= v2.position.w;
-        v2.position.w = 1.0f / v2.position.w;
-
-        // viewport
-        v0.position.x = (v0.position.x + 1) * 0.5f * fbo.size.x;
-        v0.position.y = (v0.position.y + 1) * 0.5f * fbo.size.y;
-
-        v1.position.x = (v1.position.x + 1) * 0.5f * fbo.size.x;
-        v1.position.y = (v1.position.y + 1) * 0.5f * fbo.size.y;
-
-        v2.position.x = (v2.position.x + 1) * 0.5f * fbo.size.x;
-        v2.position.y = (v2.position.y + 1) * 0.5f * fbo.size.y;
-
         drawLine(fbo, v0.position, v1.position, Vec4(1, 1, 1, 1));
         drawLine(fbo, v1.position, v2.position, Vec4(1, 1, 1, 1));
         drawLine(fbo, v2.position, v0.position, Vec4(1, 1, 1, 1));

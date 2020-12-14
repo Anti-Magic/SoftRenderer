@@ -28,97 +28,45 @@ namespace SoftRenderer
         }
     }
 
-    void RasterPipeline::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const Vertex& v0, const Vertex& v1, const Vertex& v2, const RasterState& rState)
+    void RasterPipeline::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const Vertex& v0Raw, const Vertex& v1Raw, const Vertex& v2Raw, const RasterState& rState)
     {
-        ShaderV2F vf0 = shader->vert(v0);
-        ShaderV2F vf1 = shader->vert(v1);
-        ShaderV2F vf2 = shader->vert(v2);
+        ShaderV2F v0 = shader->vert(v0Raw);
+        ShaderV2F v1 = shader->vert(v1Raw);
+        ShaderV2F v2 = shader->vert(v2Raw);
 
-        if (!rState.enableClipping)
+        std::vector<ShaderV2F> clippedVerts = Clipping(v0, v1, v2, rState);
+        if (clippedVerts.size() < 3)
         {
-            // 无需裁剪
-            RasterizerScanline::drawTriangle(fbo, shader, vf0, vf1, vf2, rState);
-            RasterizerWireframe::drawTriangle(fbo, shader, vf0, vf1, vf2, rState);
             return;
         }
 
-        // 近面裁剪
-        ClippingPlane near(Vec3(0, 0, 1), 0);
-        float d0 = near.DistanceFromPoint4(vf0.position);
-        float d1 = near.DistanceFromPoint4(vf1.position);
-        float d2 = near.DistanceFromPoint4(vf2.position);
-        int insideCount = 0;
-        if (d0 >= 0) insideCount += 1;
-        if (d1 >= 0) insideCount += 1;
-        if (d2 >= 0) insideCount += 1;
+        for (auto& v : clippedVerts)
+        {
+            PerspectiveDivision(v);
+            PerspectiveCorrect(v);
+            ViewPortTransform(v, fbo.size);
+        }
 
-        if (insideCount == 0)
+        for (int i = 0; i < clippedVerts.size(); i += 3)
         {
-            // 直接剔除
-        }
-        else if (insideCount == 1)
-        {
-            // 裁成1个新的三角形
-            if (d0 >= 0)
+            auto& cv0 = clippedVerts[i];
+            auto& cv1 = clippedVerts[i + 1];
+            auto& cv2 = clippedVerts[(i + 2) % clippedVerts.size()];
+            if (Culling(cv0, cv1, cv2, rState))
             {
-                ShaderV2F vf1s = ShaderV2F::lerp(vf0, vf1, d0 / (d0 - d1));
-                ShaderV2F vf2s = ShaderV2F::lerp(vf0, vf2, d0 / (d0 - d2));
-                RasterizerScanline::drawTriangle(fbo, shader, vf0, vf1s, vf2s, rState);
-                RasterizerWireframe::drawTriangle(fbo, shader, vf0, vf1s, vf2s, rState);
+                continue;
             }
-            else if (d1 >= 0)
+            if ((rState.rasterMode & RasterMode::Fill) != RasterMode::None)
             {
-                ShaderV2F vf0s = ShaderV2F::lerp(vf1, vf0, d1 / (d1 - d0));
-                ShaderV2F vf2s = ShaderV2F::lerp(vf1, vf2, d1 / (d1 - d2));
-                RasterizerScanline::drawTriangle(fbo, shader, vf0s, vf1, vf2s, rState);
-                RasterizerWireframe::drawTriangle(fbo, shader, vf0s, vf1, vf2s, rState);
+                RasterizerScanline::drawTriangle(fbo, shader, cv0, cv1, cv2, rState);
             }
-            else if (d2 >= 0)
+            if ((rState.rasterMode & RasterMode::Wireframe) != RasterMode::None)
             {
-                ShaderV2F vf0s = ShaderV2F::lerp(vf2, vf0, d2 / (d2 - d0));
-                ShaderV2F vf1s = ShaderV2F::lerp(vf2, vf1, d2 / (d2 - d1));
-                RasterizerScanline::drawTriangle(fbo, shader, vf0s, vf1s, vf2, rState);
-                RasterizerWireframe::drawTriangle(fbo, shader, vf0s, vf1s, vf2, rState);
+                //RasterizerWireframe::drawTriangle(fbo, shader, clippedVerts[0], clippedVerts[1], clippedVerts[2], rState);
             }
-        }
-        else if (insideCount == 2)
-        {
-            if (d0 < 0)
-            {
-                ShaderV2F vf1s = ShaderV2F::lerp(vf0, vf1, d0 / (d0 - d1));
-                ShaderV2F vf2s = ShaderV2F::lerp(vf0, vf2, d0 / (d0 - d2));
-                RasterizerScanline::drawTriangle(fbo, shader, vf1s, vf1, vf2, rState);
-                RasterizerScanline::drawTriangle(fbo, shader, vf2, vf2s, vf1s, rState);
-                RasterizerWireframe::drawTriangle(fbo, shader, vf1s, vf1, vf2, rState);
-                RasterizerWireframe::drawTriangle(fbo, shader, vf2, vf2s, vf1s, rState);
-            }
-            else if (d1 < 0)
-            {
-                ShaderV2F vf0s = ShaderV2F::lerp(vf1, vf0, d1 / (d1 - d0));
-                ShaderV2F vf2s = ShaderV2F::lerp(vf1, vf2, d1 / (d1 - d2));
-                RasterizerScanline::drawTriangle(fbo, shader, vf2s, vf2, vf0, rState);
-                RasterizerScanline::drawTriangle(fbo, shader, vf0, vf0s, vf2s, rState);
-                RasterizerWireframe::drawTriangle(fbo, shader, vf2s, vf2, vf0, rState);
-                RasterizerWireframe::drawTriangle(fbo, shader, vf0, vf0s, vf2s, rState);
-            }
-            else if (d2 < 0)
-            {
-                ShaderV2F vf0s = ShaderV2F::lerp(vf2, vf0, d2 / (d2 - d0));
-                ShaderV2F vf1s = ShaderV2F::lerp(vf2, vf1, d2 / (d2 - d1));
-                RasterizerScanline::drawTriangle(fbo, shader, vf0s, vf0, vf1, rState);
-                RasterizerScanline::drawTriangle(fbo, shader, vf1, vf1s, vf0s, rState);
-                RasterizerWireframe::drawTriangle(fbo, shader, vf0s, vf0, vf1, rState);
-                RasterizerWireframe::drawTriangle(fbo, shader, vf1, vf1s, vf0s, rState);
-            }
-        }
-        else
-        {
-            // 无需裁剪
-            RasterizerScanline::drawTriangle(fbo, shader, vf0, vf1, vf2, rState);
-            RasterizerWireframe::drawTriangle(fbo, shader, vf0, vf1, vf2, rState);
         }
     }
-    
+
     void RasterPipeline::PerspectiveDivision(ShaderV2F& v)
     {
         v.position.x /= v.position.w;
@@ -146,6 +94,7 @@ namespace SoftRenderer
         if (insideCount == 0)
         {
             // 直接剔除
+            return std::vector<ShaderV2F> { };
         }
         else if (insideCount == 1)
         {
@@ -199,7 +148,6 @@ namespace SoftRenderer
 
     bool RasterPipeline::Culling(const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2, const RasterState& rState)
     {
-        // backface culling
         if (rState.cullType == FaceCulling::Back)
         {
             Vec2 dir01(v1.position.x - v0.position.x, v1.position.y - v0.position.y);
@@ -214,14 +162,12 @@ namespace SoftRenderer
 
     void RasterPipeline::PerspectiveCorrect(ShaderV2F& v)
     {
-        // 透视插值
         v.position.w = 1.0f / v.position.w;
         v.perspectiveCorrect(v.position.w);
     }
 
     void RasterPipeline::ViewPortTransform(ShaderV2F& v0, const Vec2& size)
     {
-        // viewport
         v0.position.x = (v0.position.x + 1) * 0.5f * size.x;
         v0.position.y = (v0.position.y + 1) * 0.5f * size.y;
     }
