@@ -16,25 +16,33 @@ namespace SoftRenderer
         {
             for (size_t i = 0; i < mesh.indices.size(); i += 3)
             {
-                drawTriangle(fbo, shader, mesh.vertices[mesh.indices[i]], mesh.vertices[mesh.indices[i + 1]], mesh.vertices[mesh.indices[i + 2]], rState);
+				std::array<Vertex, 3> vRaw{
+					mesh.vertices[mesh.indices[i]],
+					mesh.vertices[mesh.indices[i + 1]],
+					mesh.vertices[mesh.indices[i + 2]]
+				};
+                drawTriangle(fbo, shader, vRaw, rState);
             }
         }
         else
         {
             for (size_t i = 0; i < mesh.vertices.size(); i += 3)
             {
-                drawTriangle(fbo, shader, mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2], rState);
+				std::array<Vertex, 3> vRaw{
+					mesh.vertices[i], 
+					mesh.vertices[i + 1], 
+					mesh.vertices[i + 2]
+				};
+                drawTriangle(fbo, shader, vRaw, rState);
             }
         }
     }
 
-    void RasterPipeline::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const Vertex& v0Raw, const Vertex& v1Raw, const Vertex& v2Raw, const RasterState& rState)
+    void RasterPipeline::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const std::array<Vertex, 3>& vRaw, const RasterState& rState)
     {
-        ShaderV2F v0 = shader->vert(v0Raw);
-        ShaderV2F v1 = shader->vert(v1Raw);
-        ShaderV2F v2 = shader->vert(v2Raw);
+		std::array<ShaderV2F, 3> v{ shader->vert(vRaw[0]), shader->vert(vRaw[1]), shader->vert(vRaw[2]) };
 
-        std::vector<ShaderV2F> clippedVerts = Clipping(v0, v1, v2, rState);
+        std::vector<ShaderV2F> clippedVerts = Clipping(v, rState);
 
         for (auto& v : clippedVerts)
         {
@@ -43,17 +51,17 @@ namespace SoftRenderer
             ViewPortTransform(v, fbo.size);
         }
 
-        for (int i = 0; i + 1 < clippedVerts.size(); i += 2)
-        {
-            auto& cv0 = clippedVerts[i];
-            auto& cv1 = clippedVerts[i + 1];
-            auto& cv2 = clippedVerts[(i + 2) % clippedVerts.size()];
-            if (Culling(cv0, cv1, cv2, rState))
-            {
-                continue;
-            }
-            if ((rState.rasterMode & RasterMode::Fill) != RasterMode::None)
-            {
+		for (int i = 2; i < clippedVerts.size(); i++)
+		{
+			auto& cv0 = clippedVerts[0];
+			auto& cv1 = clippedVerts[i - 1];
+			auto& cv2 = clippedVerts[i];
+			if (Culling(cv0, cv1, cv2, rState))
+			{
+				continue;
+			}
+			if ((rState.rasterMode & RasterMode::Fill) != RasterMode::None)
+			{
 				if (rState.rasterMethod == RasterMethod::HalfSpace)
 				{
 					RasterizerHalfSpace::drawTriangle(fbo, shader, cv0, cv1, cv2, rState);
@@ -62,12 +70,12 @@ namespace SoftRenderer
 				{
 					RasterizerScanline::drawTriangle(fbo, shader, cv0, cv1, cv2, rState);
 				}
-            }
-            if ((rState.rasterMode & RasterMode::Wireframe) != RasterMode::None)
-            {
-                RasterizerWireframe::drawTriangle(fbo, shader, clippedVerts[0], clippedVerts[1], clippedVerts[2], rState);
-            }
-        }
+			}
+			if ((rState.rasterMode & RasterMode::Wireframe) != RasterMode::None)
+			{
+				RasterizerWireframe::drawTriangle(fbo, shader, cv0, cv1, cv2, rState);
+			}
+		}
     }
 
     void RasterPipeline::PerspectiveDivision(ShaderV2F& v)
@@ -82,22 +90,22 @@ namespace SoftRenderer
 	// 若三角形边的第一个端点在内侧而第二个端点在外侧，则将交点加入到输出列表
 	// 若三角形边的第一个端点在外侧而第二个端点在内侧，则将交点以及第二个顶点依次加入到输出列表
 	// 若三角形边的两个端点都在外侧，则什么都不做。
-    std::vector<ShaderV2F> RasterPipeline::Clipping(const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2, const RasterState& rState)
+    std::vector<ShaderV2F> RasterPipeline::Clipping(const std::array<ShaderV2F, 3>& v, const RasterState& rState)
     {
         if (!rState.enableClipping)
         {
-            return std::vector<ShaderV2F> {v0, v1, v2};
+            return std::vector<ShaderV2F> {v[0], v[1], v[2]};
         }
+
+		std::vector<ShaderV2F> result;
 
         // 只对近裁面做裁剪
         ClippingPlane near(Vec3(0, 0, 1), 0);
-        float d0 = near.DistanceFromPoint4(v0.position);
-        float d1 = near.DistanceFromPoint4(v1.position);
-        float d2 = near.DistanceFromPoint4(v2.position);
-
-		std::vector<ShaderV2F> result;
-		std::array<ShaderV2F, 3> v { v0, v1, v2 };
-		std::array<float, 3> d { d0, d1, d2 };
+		std::array<float, 3> d { 
+			near.DistanceFromPoint4(v[0].position), 
+			near.DistanceFromPoint4(v[1].position), 
+			near.DistanceFromPoint4(v[2].position)
+		};
 		for (int i = 0; i < 3; i++)
 		{
 			int j = (i + 1) % 3;
