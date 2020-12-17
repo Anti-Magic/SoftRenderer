@@ -21,7 +21,7 @@ namespace SoftRenderer
     {
     }
 
-    Vec4 TextureCube::getColor(const Vec4& pos)
+    Vec4 TextureCube::GetColor(const Vec4& pos)
     {
         float absx = abs(pos.x);
         float absy = abs(pos.y);
@@ -81,6 +81,6 @@ namespace SoftRenderer
 
         float s = 0.5f * (sc / ma + 1.0f);
         float t = 0.5f * (tc / ma + 1.0f);
-        return dstTex->getColor(Vec2(s, t));
+        return dstTex->GetColor(Vec2(s, t));
     }
 }

@@ -10,7 +10,7 @@ namespace SoftRenderer
     {
     }
 
-    void FrameBuffer::clear(const Vec4& _color)
+    void FrameBuffer::Clear(const Vec4& _color)
     {
         for (size_t i = 0; i < depth.size(); i++)
         {
@@ -23,7 +23,7 @@ namespace SoftRenderer
         }
     }
 
-    void FrameBuffer::setColor(int x, int y, const Vec4& value)
+    void FrameBuffer::SetColor(int x, int y, const Vec4& value)
     {
         if (x < 0 || x >= size.x || y < 0 || y >= size.y)
         {
@@ -37,13 +37,13 @@ namespace SoftRenderer
         color->d[index + 3] = value.w;
     }
 
-    Vec4 FrameBuffer::getColor(int x, int y)
+    Vec4 FrameBuffer::GetColor(int x, int y)
     {
         int index = (x + y * size.x) * 4;
         return Vec4(color->d[index], color->d[index + 1], color->d[index + 2], color->d[index + 3]);
     }
 
-    void FrameBuffer::setDepth(int x, int y, float value)
+    void FrameBuffer::SetDepth(int x, int y, float value)
     {
         if (x < 0 || x >= size.x || y < 0 || y >= size.y)
         {
@@ -54,13 +54,13 @@ namespace SoftRenderer
         depth[index] = value;
     }
 
-    float FrameBuffer::getDepth(int x, int y)
+    float FrameBuffer::GetDepth(int x, int y)
     {
         int index = x + y * size.x;
         return depth[index];
     }
 
-    void FrameBuffer::setStencil(int x, int y, float value)
+    void FrameBuffer::SetStencil(int x, int y, float value)
     {
         if (x < 0 || x >= size.x || y < 0 || y >= size.y)
         {
@@ -71,7 +71,7 @@ namespace SoftRenderer
         stencil[index] = value;
     }
 
-    float FrameBuffer::getStencil(int x, int y)
+    float FrameBuffer::GetStencil(int x, int y)
     {
         int index = x + y * size.x;
         return stencil[index];

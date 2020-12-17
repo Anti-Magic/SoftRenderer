@@ -8,7 +8,7 @@ namespace SoftRenderer
     class MeshPrimitive
     {
     public:
-        static Mesh cube()
+        static Mesh Cube()
         {
             std::vector<Vertex> vertices;
             std::vector<float> rawVertices = {
@@ -69,7 +69,7 @@ namespace SoftRenderer
             return mesh;
         }
 
-        static Mesh quad()
+        static Mesh Quad()
         {
             std::vector<Vertex> vertices;
             std::vector<float> rawVertices = {
@@ -98,7 +98,7 @@ namespace SoftRenderer
             return mesh;
         }
 
-        static Mesh plane()
+        static Mesh Plane()
         {
             std::vector<Vertex> vertices;
             std::vector<float> rawVertices = {
@@ -127,7 +127,7 @@ namespace SoftRenderer
             return mesh;
         }
 
-        static Mesh triangle()
+        static Mesh Triangle()
         {
             std::vector<Vertex> vertices;
             std::vector<float> rawVertices = {
@@ -154,7 +154,7 @@ namespace SoftRenderer
             return mesh;
         }
 
-        static Mesh skybox()
+        static Mesh Skybox()
         {
             std::vector<Vertex> vertices;
             std::vector<float> rawVertices = {

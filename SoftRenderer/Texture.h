@@ -15,16 +15,16 @@ namespace SoftRenderer
 
         FilterMode filterMode = FilterMode::Point;
 
-        virtual Vec4 getColor(const Vec4& pos) = 0;
+        virtual Vec4 GetColor(const Vec4& pos) = 0;
 
-        inline Vec4 getColor(const Vec3& pos)
+        inline Vec4 GetColor(const Vec3& pos)
         {
-            return getColor(Vec4(pos, 0));
+            return GetColor(Vec4(pos, 0));
         }
 
-        inline Vec4 getColor(const Vec2& pos)
+        inline Vec4 GetColor(const Vec2& pos)
         {
-            return getColor(Vec4(pos, 0, 0));
+            return GetColor(Vec4(pos, 0, 0));
         }
     };
 }

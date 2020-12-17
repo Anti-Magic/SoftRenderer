@@ -13,9 +13,9 @@ namespace SoftRenderer
         std::vector<float> d;
 
         Texture2D(const Vec2& _size, const Vec4& value);
-        Vec4 getColor(const Vec4& pos) override;
+        Vec4 GetColor(const Vec4& pos) override;
 
     private:
-        Vec4 getColorVec4(int x, int y);
+        Vec4 GetColorVec4(int x, int y);
     };
 }

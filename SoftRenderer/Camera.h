@@ -13,13 +13,13 @@ namespace SoftRenderer
         {
         }
 
-        void setProjMatrix(const Mat4& v)
+        void SetProjMatrix(const Mat4& v)
         {
             projMatrix = v;
             viewProjDirty = true;
         }
 
-        virtual Mat4 getModelMatrix() override
+        virtual Mat4 GetModelMatrix() override
         {
             if (transformDirty)
             {
@@ -31,11 +31,11 @@ namespace SoftRenderer
             return modelMatrix;
         }
 
-        Mat4 getViewProjMatrix()
+        Mat4 GetViewProjMatrix()
         {
             if (transformDirty)
             {
-                getModelMatrix();
+                GetModelMatrix();
             }
             if (viewProjDirty)
             {

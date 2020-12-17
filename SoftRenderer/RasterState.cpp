@@ -38,13 +38,13 @@ namespace SoftRenderer
 	{
 	}
 
-	bool RasterState::depthTestFunc(float src, float dst) const
+	bool RasterState::DepthTestFunc(float src, float dst) const
 	{
 		//return src <= 1 && src >= dst;
 		return src <= dst;
 	}
 
-	Vec4 RasterState::alphaBlendFunc(const Vec4& src, const Vec4& dst) const
+	Vec4 RasterState::AlphaBlendFunc(const Vec4& src, const Vec4& dst) const
 	{
 		float alpha = src.w;
 		return src * alpha + dst * (1 - alpha);

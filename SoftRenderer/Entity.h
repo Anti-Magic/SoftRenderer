@@ -22,61 +22,61 @@ namespace SoftRenderer
         {
         }
 
-        Vec3 getPos()
+        Vec3 GetPos()
         {
             return pos;
         }
 
-        void setPos(const Vec3& v)
+        void SetPos(const Vec3& v)
         {
             pos = v;
             transformDirty = true;
         }
 
-        Quat getRot()
+        Quat GetRot()
         {
             return rot;
         }
 
-        void setRot(const Quat& v)
+        void SetRot(const Quat& v)
         {
             rot = v;
             transformDirty = true;
         }
 
-        Vec3 getScale()
+        Vec3 GetScale()
         {
             return scale;
         }
 
-        void setScale(const Vec3& v)
+        void SetScale(const Vec3& v)
         {
             scale = v;
             transformDirty = true;
         }
 
-        void lookAt(const Vec3& center, const Vec3& up)
+        void LookAt(const Vec3& center, const Vec3& up)
         {
             Mat4 viewMat = Mat4::lookAt(pos, center, up);
-            setRot(Quat::fromMat4(viewMat.inverse()));
+            SetRot(Quat::fromMat4(viewMat.inverse()));
         }
 
-        Vec3 right()
+        Vec3 Right()
         {
             return Vec3(1, 0, 0) * rot;
         }
 
-        Vec3 up()
+        Vec3 Up()
         {
             return Vec3(0, 1, 0) * rot;
         }
 
-        Vec3 forward()
+        Vec3 Forward()
         {
             return Vec3(0, 0, 1) * rot;
         }
 
-        virtual Mat4 getModelMatrix()
+        virtual Mat4 GetModelMatrix()
         {
             if (transformDirty)
             {

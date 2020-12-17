@@ -6,7 +6,7 @@
 
 namespace SoftRenderer
 {
-    void RasterizerHalfSpace::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, ShaderV2F v0, ShaderV2F v1, ShaderV2F v2, const RasterState& rState)
+    void RasterizerHalfSpace::DrawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, ShaderV2F v0, ShaderV2F v1, ShaderV2F v2, const RasterState& rState)
     {
         int minX = clamp(std::min(std::min(v0.position.x, v1.position.x), v2.position.x), 0.0f, fbo.size.x - 1);
         int maxX = clamp(std::max(std::max(v0.position.x, v1.position.x), v2.position.x), 0.0f, fbo.size.x - 1);
@@ -16,20 +16,20 @@ namespace SoftRenderer
         {
             for (int x = minX; x <= maxX; x++)
             {
-                Vec3 weight = calcWeight(v0, v1, v2, Vec2(x, y));
+                Vec3 weight = CalcWeight(v0, v1, v2, Vec2(x, y));
                 if (weight.x >= 0 && weight.y >= 0 && weight.z >= 0)
                 {
-                    ShaderV2F vm = ShaderV2F::baryerp(v0, v1, v2, weight);
+                    ShaderV2F vm = ShaderV2F::Baryerp(v0, v1, v2, weight);
                     float depth = vm.position.z;
-                    if (!rState.enableDepthTest || rState.depthTestFunc(depth, fbo.getDepth(x, y)))
+                    if (!rState.enableDepthTest || rState.DepthTestFunc(depth, fbo.GetDepth(x, y)))
                     {
-                        vm.perspectiveCorrect(1.0f / vm.position.w);
-                        Vec4 color = shader->frag(vm);
-                        color = rState.alphaBlendFunc(color, fbo.getColor(x, y));
-                        fbo.setColor(x, y, color);
+                        vm.PerspectiveCorrect(1.0f / vm.position.w);
+                        Vec4 color = shader->Frag(vm);
+                        color = rState.AlphaBlendFunc(color, fbo.GetColor(x, y));
+                        fbo.SetColor(x, y, color);
                         if (rState.enableDepthWrite)
                         {
-                            fbo.setDepth(x, y, depth);
+                            fbo.SetDepth(x, y, depth);
                         }
                     }
                 }
@@ -37,7 +37,7 @@ namespace SoftRenderer
         }
     }
 
-    Vec3 RasterizerHalfSpace::calcWeight(const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2, const Vec2& p)
+    Vec3 RasterizerHalfSpace::CalcWeight(const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2, const Vec2& p)
     {
         Vec2 v01(v1.position.x - v0.position.x, v1.position.y - v0.position.y);
         Vec2 v02(v2.position.x - v0.position.x, v2.position.y - v0.position.y);

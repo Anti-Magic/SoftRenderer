@@ -4,7 +4,7 @@
 
 namespace SoftRenderer
 {
-    static Mesh quad()
+    static Mesh Quad()
     {
         std::vector<Vertex> vertices;
         std::vector<float> rawVertices = {
@@ -33,17 +33,17 @@ namespace SoftRenderer
     }
 
     std::unique_ptr<Shader> ScreenPostProcesser::defaultShader(std::make_unique<ShaderUnlit>());
-    Mesh ScreenPostProcesser::mesh(quad());
+    Mesh ScreenPostProcesser::mesh(Quad());
     RasterState ScreenPostProcesser::rState;
 
-	void ScreenPostProcesser::render(FrameBuffer& src, FrameBuffer& dst, std::unique_ptr<Shader>& shader)
+	void ScreenPostProcesser::Render(FrameBuffer& src, FrameBuffer& dst, std::unique_ptr<Shader>& shader)
 	{
-        render(src.color, dst, shader);
+        Render(src.color, dst, shader);
 	}
 
-    void ScreenPostProcesser::render(std::shared_ptr<Texture2D> src, FrameBuffer& dst, std::unique_ptr<Shader>& shader)
+    void ScreenPostProcesser::Render(std::shared_ptr<Texture2D> src, FrameBuffer& dst, std::unique_ptr<Shader>& shader)
 	{
         shader->texture0 = src;
-        RasterPipeline::drawTriangles(dst, shader, quad(), rState);
+        RasterPipeline::DrawTriangles(dst, shader, Quad(), rState);
 	}
 }

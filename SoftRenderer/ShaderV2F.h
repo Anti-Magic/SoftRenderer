@@ -14,7 +14,7 @@ namespace SoftRenderer
         Vec4 texcoord2;
         Vec4 texcoord3;
 
-        void perspectiveCorrect(float v)
+        void PerspectiveCorrect(float v)
         {
             normal = normal * v;
             texcoord0 = texcoord0 * v;
@@ -23,7 +23,7 @@ namespace SoftRenderer
             texcoord3 = texcoord3 * v;
         }
 
-        static ShaderV2F lerp(const ShaderV2F& a, const ShaderV2F& b, float t)
+        static ShaderV2F Lerp(const ShaderV2F& a, const ShaderV2F& b, float t)
         {
             ShaderV2F o;
             o.position = SoftRenderer::lerp(a.position, b.position, t);
@@ -35,7 +35,7 @@ namespace SoftRenderer
             return o;
         }
 
-        static ShaderV2F baryerp(const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2, const Vec3& weight)
+        static ShaderV2F Baryerp(const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2, const Vec3& weight)
         {
             ShaderV2F o;
             o.position = v0.position * weight.x + v1.position * weight.y + v2.position * weight.z;

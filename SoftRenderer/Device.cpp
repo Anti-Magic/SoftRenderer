@@ -18,14 +18,14 @@ namespace SoftRenderer
 	void Device::setScene(std::shared_ptr<Scene> _scene)
 	{
 		scene = _scene;
-		scene->start();
+		scene->Start();
 	}
 
 	void Device::loop(float dt)
 	{
 		if (scene != nullptr)
 		{
-			scene->update(dt);
+			scene->Update(dt);
 		}
 
 		memset(keyDown, 0, (size_t)KeyCode::size);

@@ -36,44 +36,44 @@ namespace SoftRenderer
         {
         }
 
-        void start() override
+        void Start() override
         {
-            camera.setPos(Vec3(0, 0, -1.0f));
-            camera.lookAt(Vec3(0, 0, 0), Vec3(0, 1, 0));
-            camera.setProjMatrix(Mat4::perspective(PI / 3.0f, device->size.x / device->size.y, 0.1f, 100.0f));
+            camera.SetPos(Vec3(0, 0, -1.0f));
+            camera.LookAt(Vec3(0, 0, 0), Vec3(0, 1, 0));
+            camera.SetProjMatrix(Mat4::perspective(PI / 3.0f, device->size.x / device->size.y, 0.1f, 100.0f));
 
-            box.mesh = MeshPrimitive::triangle();
-            box.setPos(Vec3(0, 0.0f, 0));
-            //box.setRot(Quat::fromAxisAngle(Vec3(0, 1, 0), PI * 0.45));
-            //box.setRot(Quat::fromAxisAngle(Vec3(0, 1, 0), PI * 0.25));
+            box.mesh = MeshPrimitive::Triangle();
+            box.SetPos(Vec3(0, 0.0f, 0));
+            //box.SetRot(Quat::fromAxisAngle(Vec3(0, 1, 0), PI * 0.45));
+            //box.SetRot(Quat::fromAxisAngle(Vec3(0, 1, 0), PI * 0.25));
             box.shader = std::make_unique<ShaderUnlit>();
-            box.shader->mvp = box.getModelMatrix() * camera.getViewProjMatrix();
+            box.shader->mvp = box.GetModelMatrix() * camera.GetViewProjMatrix();
             box.shader->texture0 = device->LoadTexture2D("res/screen.png", true);
         }
 
         float xxx = 0;
 
-        void update(float dt) override
+        void Update(float dt) override
         {
-            updateCameraTransform(dt);
+            UpdateCameraTransform(dt);
 
             xxx += 0.3f * dt;
-            //box.setRot(Quat::fromAxisAngle(Vec3(0, 1, 0), xxx));
+            //box.SetRot(Quat::fromAxisAngle(Vec3(0, 1, 0), xxx));
             /*float rate = PI * 0.3f * dt;
-            Quat rot = box.getRot() * Quat::fromAxisAngle(Vec3(0, 1, 0), rate);
-            box.setRot(rot);*/
-            box.shader->mvp = box.getModelMatrix() * camera.getViewProjMatrix();
+            Quat rot = box.GetRot() * Quat::fromAxisAngle(Vec3(0, 1, 0), rate);
+            box.SetRot(rot);*/
+            box.shader->mvp = box.GetModelMatrix() * camera.GetViewProjMatrix();
 
-            device->frameBuffer.clear(Vec4(0, 0, 0, 1));
-            RasterPipeline::drawTriangles(device->frameBuffer, box.shader, box.mesh, rState);
+            device->frameBuffer.Clear(Vec4(0, 0, 0, 1));
+            RasterPipeline::DrawTriangles(device->frameBuffer, box.shader, box.mesh, rState);
 
-            onGUI(dt);
+            OnGUI(dt);
         }
 
         bool enableRasterModeFill = true;
         bool enableRasterModeWireframe = true;
         bool enableBackFaceCulling = true;
-        void onGUI(float dt)
+        void OnGUI(float dt)
         {
             ImGui::Begin("Debug");
             ImGui::Text("Average %.3f ms/frame (%.1f FPS)", dt * 1000, 1.0f / dt);
@@ -126,56 +126,56 @@ namespace SoftRenderer
         Vec2 mousePosLast;
         float cameraRotH;
         float cameraRotV;
-        void updateCameraTransform(float dt)
+        void UpdateCameraTransform(float dt)
         {
             if (device->isKeyPressed(KeyCode::W))
             {
-                camera.setPos(camera.getPos() + camera.forward() * dt);
+                camera.SetPos(camera.GetPos() + camera.Forward() * dt);
             }
             if (device->isKeyPressed(KeyCode::S))
             {
-                camera.setPos(camera.getPos() - camera.forward() * dt);
+                camera.SetPos(camera.GetPos() - camera.Forward() * dt);
             }
             if (device->isKeyPressed(KeyCode::A))
             {
-                camera.setPos(camera.getPos() - camera.right() * dt);
+                camera.SetPos(camera.GetPos() - camera.Right() * dt);
             }
             if (device->isKeyPressed(KeyCode::D))
             {
-                camera.setPos(camera.getPos() + camera.right() * dt);
+                camera.SetPos(camera.GetPos() + camera.Right() * dt);
             }
             if (device->isKeyPressed(KeyCode::Q))
             {
-                camera.setPos(camera.getPos() - camera.up() * dt);
+                camera.SetPos(camera.GetPos() - camera.Up() * dt);
             }
             if (device->isKeyPressed(KeyCode::E))
             {
-                camera.setPos(camera.getPos() + camera.up() * dt);
+                camera.SetPos(camera.GetPos() + camera.Up() * dt);
             }
 
             /*if (device->isKeyPressed(KeyCode::W))
             {
-                camera.setPos(camera.getPos() + Vec3(0, 0, 1) * dt);
+                camera.SetPos(camera.GetPos() + Vec3(0, 0, 1) * dt);
             }
             if (device->isKeyPressed(KeyCode::S))
             {
-                camera.setPos(camera.getPos() - Vec3(0, 0, 1) * dt);
+                camera.SetPos(camera.GetPos() - Vec3(0, 0, 1) * dt);
             }
             if (device->isKeyPressed(KeyCode::A))
             {
-                camera.setPos(camera.getPos() - Vec3(1, 0, 0) * dt);
+                camera.SetPos(camera.GetPos() - Vec3(1, 0, 0) * dt);
             }
             if (device->isKeyPressed(KeyCode::D))
             {
-                camera.setPos(camera.getPos() + Vec3(1, 0, 0) * dt);
+                camera.SetPos(camera.GetPos() + Vec3(1, 0, 0) * dt);
             }
             if (device->isKeyPressed(KeyCode::Q))
             {
-                camera.setPos(camera.getPos() - Vec3(0, 1, 0) * dt);
+                camera.SetPos(camera.GetPos() - Vec3(0, 1, 0) * dt);
             }
             if (device->isKeyPressed(KeyCode::E))
             {
-                camera.setPos(camera.getPos() + Vec3(0, 1, 0) * dt);
+                camera.SetPos(camera.GetPos() + Vec3(0, 1, 0) * dt);
             }*/
 
             if (device->isMousePressed(MouseButton::Left))
@@ -189,8 +189,8 @@ namespace SoftRenderer
                     Vec2 dlt = device->getMousePos() - mousePosLast;
                     cameraRotH = fmod(cameraRotH + dlt.x * dt * PI * 0.05f, 2.0f * PI);
                     cameraRotV = fmod(cameraRotV + dlt.y * dt * PI * 0.05f, 2.0f * PI);
-                    camera.setRot(Quat::fromAxisAngle(Vec3(0, 1, 0), cameraRotH) * Quat::fromAxisAngle(Vec3(1, 0, 0), cameraRotV));
-                    /*camera.setRot(camera.getRot()
+                    camera.SetRot(Quat::fromAxisAngle(Vec3(0, 1, 0), cameraRotH) * Quat::fromAxisAngle(Vec3(1, 0, 0), cameraRotV));
+                    /*camera.SetRot(camera.GetRot()
                         * Quat::fromAxisAngle(Vec3(0, 1, 0), dlt.x * dt * PI * 0.05f)
                         * Quat::fromAxisAngle(Vec3(1, 0, 0), dlt.y * dt * PI * 0.05f)
                     );*/

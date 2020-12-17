@@ -33,7 +33,7 @@ namespace SoftRenderer
         Vec4 uniformV0;
         Vec4 uniformV1;
 
-        virtual ShaderV2F vert(const Vertex& v) = 0;
-        virtual Vec4 frag(const ShaderV2F& f) = 0;
+        virtual ShaderV2F Vert(const Vertex& v) = 0;
+        virtual Vec4 Frag(const ShaderV2F& f) = 0;
     };
 }

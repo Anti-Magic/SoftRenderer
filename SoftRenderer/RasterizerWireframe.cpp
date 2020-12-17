@@ -4,18 +4,18 @@
 
 namespace SoftRenderer
 {
-    void RasterizerWireframe::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, ShaderV2F v0, ShaderV2F v1, ShaderV2F v2, const RasterState& rState)
+    void RasterizerWireframe::DrawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, ShaderV2F v0, ShaderV2F v1, ShaderV2F v2, const RasterState& rState)
     {
-		drawLineLerp(fbo, v0.position, v1.position, Vec4(1, 1, 1, 1));
-		drawLineLerp(fbo, v1.position, v2.position, Vec4(1, 1, 1, 1));
-		drawLineLerp(fbo, v2.position, v0.position, Vec4(1, 1, 1, 1));
+		DrawLineLerp(fbo, v0.position, v1.position, Vec4(1, 1, 1, 1));
+		DrawLineLerp(fbo, v1.position, v2.position, Vec4(1, 1, 1, 1));
+		DrawLineLerp(fbo, v2.position, v0.position, Vec4(1, 1, 1, 1));
 
-        //drawLineBresenham(fbo, v0.position, v1.position, Vec4(1, 1, 1, 1));
-        //drawLineBresenham(fbo, v1.position, v2.position, Vec4(1, 1, 1, 1));
-        //drawLineBresenham(fbo, v2.position, v0.position, Vec4(1, 1, 1, 1));
+        //DrawLineBresenham(fbo, v0.position, v1.position, Vec4(1, 1, 1, 1));
+        //DrawLineBresenham(fbo, v1.position, v2.position, Vec4(1, 1, 1, 1));
+        //DrawLineBresenham(fbo, v2.position, v0.position, Vec4(1, 1, 1, 1));
     }
 
-	void RasterizerWireframe::drawLineLerp(FrameBuffer& fbo, const Vec4& begin, const Vec4& end, const Vec4& color)
+	void RasterizerWireframe::DrawLineLerp(FrameBuffer& fbo, const Vec4& begin, const Vec4& end, const Vec4& color)
 	{
 		int minX = clamp(std::min(begin.x, end.x), 0.0f, fbo.size.x - 1);
 		int maxX = clamp(std::max(begin.x, end.x), 0.0f, fbo.size.x - 1);
@@ -26,7 +26,7 @@ namespace SoftRenderer
 			for (int x = minX; x < maxX; x++)
 			{
 				Vec4 p = lerp(begin, end, (x - begin.x) / (end.x - begin.x));
-				fbo.setColor(p.x, p.y, color);
+				fbo.SetColor(p.x, p.y, color);
 			}
 		}
 		else
@@ -34,12 +34,12 @@ namespace SoftRenderer
 			for (int y = minY; y < maxY; y++)
 			{
 				Vec4 p = lerp(begin, end, (y - begin.y) / (end.y - begin.y));
-				fbo.setColor(p.x, p.y, color);
+				fbo.SetColor(p.x, p.y, color);
 			}
 		}
 	}
 
-	void RasterizerWireframe::drawLineBresenham(FrameBuffer& fbo, const Vec4& begin, const Vec4& end, const Vec4& color)
+	void RasterizerWireframe::DrawLineBresenham(FrameBuffer& fbo, const Vec4& begin, const Vec4& end, const Vec4& color)
 	{
 		float beginX = clamp(begin.x, 0.0f, fbo.size.x - 1);
 		float beginY = clamp(begin.y, 0.0f, fbo.size.y - 1);
@@ -62,7 +62,7 @@ namespace SoftRenderer
 			{
 				if (x >= 0 && x < fbo.size.x && y >= 0 && y < fbo.size.y)
 				{
-					fbo.setColor(x, y, color);
+					fbo.SetColor(x, y, color);
 				}
 
 				eps += dy;
@@ -79,7 +79,7 @@ namespace SoftRenderer
 			{
 				if (x >= 0 && x < fbo.size.x && y >= 0 && y < fbo.size.y)
 				{
-					fbo.setColor(x, y, color);
+					fbo.SetColor(x, y, color);
 				}
 
 				eps += dx;

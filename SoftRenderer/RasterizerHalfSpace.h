@@ -15,9 +15,9 @@ namespace SoftRenderer
     class RasterizerHalfSpace
     {
     public:
-        static void drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, ShaderV2F v0, ShaderV2F v1, ShaderV2F v2, const RasterState& rState);
+        static void DrawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, ShaderV2F v0, ShaderV2F v1, ShaderV2F v2, const RasterState& rState);
     
     private:
-        static Vec3 calcWeight(const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2, const Vec2& p);
+        static Vec3 CalcWeight(const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2, const Vec2& p);
     };
 }

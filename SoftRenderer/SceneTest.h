@@ -42,31 +42,31 @@ namespace SoftRenderer
         {
         }
 
-        void start() override
+        void Start() override
         {
-            camera.setPos(Vec3(0, 1, -4));
-            camera.lookAt(Vec3(0, 1, 0), Vec3(0, 1, 0));
-            camera.setProjMatrix(Mat4::perspective(PI / 3.0f, device->size.x / device->size.y, 0.1f, 100.0f));
+            camera.SetPos(Vec3(0, 1, -4));
+            camera.LookAt(Vec3(0, 1, 0), Vec3(0, 1, 0));
+            camera.SetProjMatrix(Mat4::perspective(PI / 3.0f, device->size.x / device->size.y, 0.1f, 100.0f));
 
             lightPos = Vec3(2, 3, -1);
             lightViewMatrix = Mat4::lookAt(lightPos, Vec3(0, 0, 0), Vec3(0, 1, 0));
             lightProjMatrix = Mat4::ortho(10.0f, 10.0f, 0.1f, 40.0f);
             shaderDepth = std::make_unique<ShaderDepth>();
 
-            box.mesh = MeshPrimitive::cube();
-            box.setPos(Vec3(0, 0.51f, 0));
+            box.mesh = MeshPrimitive::Cube();
+            box.SetPos(Vec3(0, 0.51f, 0));
             box.shader = std::make_unique<ShaderUnlit>();
-            box.shader->mvp = box.getModelMatrix() * camera.getViewProjMatrix();
+            box.shader->mvp = box.GetModelMatrix() * camera.GetViewProjMatrix();
             box.shader->texture0 = device->LoadTexture2D("res/container.png", true);
 
-            plane.mesh = MeshPrimitive::plane();
-            plane.setScale(Vec3(4, 4, 4));
+            plane.mesh = MeshPrimitive::Plane();
+            plane.SetScale(Vec3(4, 4, 4));
             plane.shader = std::make_unique<ShaderShadowRecv>();
-            plane.shader->mvp = plane.getModelMatrix() * camera.getViewProjMatrix();
-            plane.shader->uniformM0 = plane.getModelMatrix() * lightViewMatrix * lightProjMatrix;
+            plane.shader->mvp = plane.GetModelMatrix() * camera.GetViewProjMatrix();
+            plane.shader->uniformM0 = plane.GetModelMatrix() * lightViewMatrix * lightProjMatrix;
             plane.shader->texture0 = fboDepth.color;
 
-            skybox.mesh = MeshPrimitive::skybox();
+            skybox.mesh = MeshPrimitive::Skybox();
             skybox.shader = std::make_unique<ShaderSkybox>();
             skybox.shader->texture0 = std::make_shared<TextureCube>(
                 device->LoadTexture2D("res/skybox2/left.jpg", false),
@@ -81,50 +81,50 @@ namespace SoftRenderer
             cameraRotV = 0;
         }
 
-        void update(float dt) override
+        void Update(float dt) override
         {
-            updateCameraTransform(dt);
+            UpdateCameraTransform(dt);
 
             float rate = PI * 0.3f * dt;
-            box.setRot(box.getRot() * Quat::fromAxisAngle(Vec3(0, 1, 0), rate));
-            box.shader->mvp = box.getModelMatrix() * camera.getViewProjMatrix();
-            plane.shader->mvp = plane.getModelMatrix() * camera.getViewProjMatrix();
+            box.SetRot(box.GetRot() * Quat::fromAxisAngle(Vec3(0, 1, 0), rate));
+            box.shader->mvp = box.GetModelMatrix() * camera.GetViewProjMatrix();
+            plane.shader->mvp = plane.GetModelMatrix() * camera.GetViewProjMatrix();
 
-            //camera.setRot(camera.getRot() * Quat::fromAxisAngle(Vec3(0, 1, 0), rate));
+            //camera.SetRot(camera.GetRot() * Quat::fromAxisAngle(Vec3(0, 1, 0), rate));
 
-            skybox.setPos(camera.getPos());
-            skybox.shader->mvp = skybox.getModelMatrix() * camera.getViewProjMatrix();
+            skybox.SetPos(camera.GetPos());
+            skybox.shader->mvp = skybox.GetModelMatrix() * camera.GetViewProjMatrix();
 
             // shadow map
-            fboDepth.clear(Vec4(1, 1, 1, 1));
-            shaderDepth->mvp = box.getModelMatrix() * lightViewMatrix * lightProjMatrix;
-            RasterPipeline::drawTriangles(fboDepth, shaderDepth, box.mesh, rState);
-            //shaderDepth->mvp = plane.getModelMatrix() * lightViewMatrix * lightProjMatrix;
-            //Rasterization::drawTriangles(fboDepth, shaderDepth, plane.mesh);
+            fboDepth.Clear(Vec4(1, 1, 1, 1));
+            shaderDepth->mvp = box.GetModelMatrix() * lightViewMatrix * lightProjMatrix;
+            RasterPipeline::DrawTriangles(fboDepth, shaderDepth, box.mesh, rState);
+            //shaderDepth->mvp = plane.GetModelMatrix() * lightViewMatrix * lightProjMatrix;
+            //Rasterization::DrawTriangles(fboDepth, shaderDepth, plane.mesh);
 
-            device->frameBuffer.clear(Vec4(0, 0, 0, 1));
+            device->frameBuffer.Clear(Vec4(0, 0, 0, 1));
             rState.enableDepthWrite = false;
-            //RasterPipeline::drawTriangles(device->frameBuffer, skybox.shader, skybox.mesh, rState);
+            //RasterPipeline::DrawTriangles(device->frameBuffer, skybox.shader, skybox.mesh, rState);
             rState.enableDepthWrite = true;
-            RasterPipeline::drawTriangles(device->frameBuffer, box.shader, box.mesh, rState);
-            RasterPipeline::drawTriangles(device->frameBuffer, plane.shader, plane.mesh, rState);
+            RasterPipeline::DrawTriangles(device->frameBuffer, box.shader, box.mesh, rState);
+            RasterPipeline::DrawTriangles(device->frameBuffer, plane.shader, plane.mesh, rState);
 
             //rState.enableDepthWrite = true;
-            //RasterPipeline::drawTriangles(device->frameBuffer, box.shader, box.mesh, rState);
-            //RasterPipeline::drawTriangles(device->frameBuffer, plane.shader, plane.mesh, rState);
+            //RasterPipeline::DrawTriangles(device->frameBuffer, box.shader, box.mesh, rState);
+            //RasterPipeline::DrawTriangles(device->frameBuffer, plane.shader, plane.mesh, rState);
             //rState.enableDepthTest = false;
             //rState.enableDepthWrite = false;
-            //RasterPipeline::drawTriangles(device->frameBuffer, skybox.shader, skybox.mesh, rState);
+            //RasterPipeline::DrawTriangles(device->frameBuffer, skybox.shader, skybox.mesh, rState);
 
             //ScreenPostProcesser::render(fboDepth, device->frameBuffer, ScreenPostProcesser::defaultShader);
 
-            onGUI(dt);
+            OnGUI(dt);
         }
     
         bool enableRasterModeFill = true;
         bool enableRasterModeWireframe = false;
         bool enableBackFaceCulling = true;
-        void onGUI(float dt)
+        void OnGUI(float dt)
         {
             ImGui::Begin("Debug");
             ImGui::Text("Average %.3f ms/frame (%.1f FPS)", dt * 1000, 1.0f / dt);
@@ -178,56 +178,56 @@ namespace SoftRenderer
         Vec2 mousePosLast;
         float cameraRotH;
         float cameraRotV;
-        void updateCameraTransform(float dt)
+        void UpdateCameraTransform(float dt)
         {
             if (device->isKeyPressed(KeyCode::W))
             {
-                camera.setPos(camera.getPos() + camera.forward() * dt);
+                camera.SetPos(camera.GetPos() + camera.Forward() * dt);
             }
             if (device->isKeyPressed(KeyCode::S))
             {
-                camera.setPos(camera.getPos() - camera.forward() * dt);
+                camera.SetPos(camera.GetPos() - camera.Forward() * dt);
             }
             if (device->isKeyPressed(KeyCode::A))
             {
-                camera.setPos(camera.getPos() - camera.right() * dt);
+                camera.SetPos(camera.GetPos() - camera.Right() * dt);
             }
             if (device->isKeyPressed(KeyCode::D))
             {
-                camera.setPos(camera.getPos() + camera.right() * dt);
+                camera.SetPos(camera.GetPos() + camera.Right() * dt);
             }
             if (device->isKeyPressed(KeyCode::Q))
             {
-                camera.setPos(camera.getPos() - camera.up() * dt);
+                camera.SetPos(camera.GetPos() - camera.Up() * dt);
             }
             if (device->isKeyPressed(KeyCode::E))
             {
-                camera.setPos(camera.getPos() + camera.up() * dt);
+                camera.SetPos(camera.GetPos() + camera.Up() * dt);
             }
 
             /*if (device->isKeyPressed(KeyCode::W))
             {
-                camera.setPos(camera.getPos() + Vec3(0, 0, 1) * dt);
+                camera.SetPos(camera.GetPos() + Vec3(0, 0, 1) * dt);
             }
             if (device->isKeyPressed(KeyCode::S))
             {
-                camera.setPos(camera.getPos() - Vec3(0, 0, 1) * dt);
+                camera.SetPos(camera.GetPos() - Vec3(0, 0, 1) * dt);
             }
             if (device->isKeyPressed(KeyCode::A))
             {
-                camera.setPos(camera.getPos() - Vec3(1, 0, 0) * dt);
+                camera.SetPos(camera.GetPos() - Vec3(1, 0, 0) * dt);
             }
             if (device->isKeyPressed(KeyCode::D))
             {
-                camera.setPos(camera.getPos() + Vec3(1, 0, 0) * dt);
+                camera.SetPos(camera.GetPos() + Vec3(1, 0, 0) * dt);
             }
             if (device->isKeyPressed(KeyCode::Q))
             {
-                camera.setPos(camera.getPos() - Vec3(0, 1, 0) * dt);
+                camera.SetPos(camera.GetPos() - Vec3(0, 1, 0) * dt);
             }
             if (device->isKeyPressed(KeyCode::E))
             {
-                camera.setPos(camera.getPos() + Vec3(0, 1, 0) * dt);
+                camera.SetPos(camera.GetPos() + Vec3(0, 1, 0) * dt);
             }*/
 
             if (device->isMousePressed(MouseButton::Left))
@@ -241,8 +241,8 @@ namespace SoftRenderer
                     Vec2 dlt = device->getMousePos() - mousePosLast;
                     cameraRotH = fmod(cameraRotH + dlt.x * dt * PI * 0.05f, 2.0f * PI);
                     cameraRotV = fmod(cameraRotV + dlt.y * dt * PI * 0.05f, 2.0f * PI);
-                    camera.setRot(Quat::fromAxisAngle(Vec3(0, 1, 0), cameraRotH) * Quat::fromAxisAngle(Vec3(1, 0, 0), cameraRotV));
-                    /*camera.setRot(camera.getRot()
+                    camera.SetRot(Quat::fromAxisAngle(Vec3(0, 1, 0), cameraRotH) * Quat::fromAxisAngle(Vec3(1, 0, 0), cameraRotV));
+                    /*camera.SetRot(camera.GetRot()
                         * Quat::fromAxisAngle(Vec3(0, 1, 0), dlt.x * dt * PI * 0.05f)
                         * Quat::fromAxisAngle(Vec3(1, 0, 0), dlt.y * dt * PI * 0.05f)
                     );*/

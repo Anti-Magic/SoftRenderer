@@ -14,11 +14,11 @@ namespace SoftRenderer
         {
         }
 
-        virtual void start()
+        virtual void Start()
         {
         }
 
-        virtual void update(float dt)
+        virtual void Update(float dt)
         {
         }
 

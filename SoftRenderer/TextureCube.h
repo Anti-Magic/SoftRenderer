@@ -17,7 +17,7 @@ namespace SoftRenderer
             std::shared_ptr<Texture2D> _back,
             std::shared_ptr<Texture2D> _front);
 
-        Vec4 getColor(const Vec4& pos) override;
+        Vec4 GetColor(const Vec4& pos) override;
 
     private:
         std::shared_ptr<Texture2D> left;

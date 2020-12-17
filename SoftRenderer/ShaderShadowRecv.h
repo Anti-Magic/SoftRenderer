@@ -7,7 +7,7 @@ namespace SoftRenderer
     class ShaderShadowRecv : public Shader
     {
     public:
-        ShaderV2F vert(const Vertex& v) override
+        ShaderV2F Vert(const Vertex& v) override
         {
             ShaderV2F o;
             o.position = v.position * mvp;
@@ -16,7 +16,7 @@ namespace SoftRenderer
             return o;
         }
 
-        Vec4 frag(const ShaderV2F& f) override
+        Vec4 Frag(const ShaderV2F& f) override
         {
             float shadow = shadowCalculation(f.texcoord3);
             if (shadow > 0)
@@ -36,7 +36,7 @@ namespace SoftRenderer
             // 变换到[0,1]的范围
             Vec2 uv = Vec2(projCoords.x * 0.5f + 0.5f, projCoords.y * 0.5f + 0.5f);
             // 取得最近点的深度(使用[0,1]范围下的fragPosLight当坐标)
-            float closestDepth = texture0->getColor(uv).x;
+            float closestDepth = texture0->GetColor(uv).x;
             // 取得当前片元在光源视角下的深度
             float currentDepth = projCoords.z;// *0.5f + 0.5f;
             // 检查当前片元是否在阴影中

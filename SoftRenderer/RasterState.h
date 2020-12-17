@@ -42,7 +42,7 @@ namespace SoftRenderer
 		FaceCulling cullType;
 
 		RasterState();
-		bool depthTestFunc(float src, float dst) const;
-		Vec4 alphaBlendFunc(const Vec4& src, const Vec4& dst) const;
+		bool DepthTestFunc(float src, float dst) const;
+		Vec4 AlphaBlendFunc(const Vec4& src, const Vec4& dst) const;
 	};
 }

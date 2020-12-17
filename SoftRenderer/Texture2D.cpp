@@ -16,7 +16,7 @@ namespace SoftRenderer
         }
     }
 
-    Vec4 Texture2D::getColor(const Vec4& pos)
+    Vec4 Texture2D::GetColor(const Vec4& pos)
     {
         float x = pos.x * size.x;
         float y = pos.y * size.y;
@@ -24,21 +24,21 @@ namespace SoftRenderer
         y = clamp(y, 0.0f, size.y - 1);
         if (filterMode == FilterMode::Point)
         {
-            return getColorVec4(floor(x), floor(y));
+            return GetColorVec4(floor(x), floor(y));
         }
         else
         {
-            Vec4 ld = getColorVec4(floor(x), floor(y));
-            Vec4 rd = getColorVec4(ceil(x), floor(y));
-            Vec4 lu = getColorVec4(floor(x), ceil(y));
-            Vec4 ru = getColorVec4(ceil(x), ceil(y));
+            Vec4 ld = GetColorVec4(floor(x), floor(y));
+            Vec4 rd = GetColorVec4(ceil(x), floor(y));
+            Vec4 lu = GetColorVec4(floor(x), ceil(y));
+            Vec4 ru = GetColorVec4(ceil(x), ceil(y));
             Vec4 hd = lerp(ld, rd, x - floor(x));
             Vec4 hu = lerp(lu, ru, x - floor(x));
             return lerp(hd, hu, y - floor(y));
         }
     }
 
-    Vec4 Texture2D::getColorVec4(int x, int y)
+    Vec4 Texture2D::GetColorVec4(int x, int y)
     {
         int index = (x + y * size.x) * 4;
         return Vec4(d[index], d[index + 1], d[index + 2], d[index + 3]);

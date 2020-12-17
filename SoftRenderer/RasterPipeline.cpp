@@ -10,31 +10,31 @@
 
 namespace SoftRenderer 
 {
-    void RasterPipeline::drawTriangles(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const Mesh& mesh, const RasterState& rState)
+    void RasterPipeline::DrawTriangles(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const Mesh& mesh, const RasterState& rState)
     {
         if (mesh.indices.size() > 0)
         {
             for (size_t i = 0; i < mesh.indices.size(); i += 3)
             {
-				drawTriangle(fbo, shader, mesh.vertices[mesh.indices[i]], mesh.vertices[mesh.indices[i + 1]], mesh.vertices[mesh.indices[i + 2]], rState);
+				DrawTriangle(fbo, shader, mesh.vertices[mesh.indices[i]], mesh.vertices[mesh.indices[i + 1]], mesh.vertices[mesh.indices[i + 2]], rState);
             }
         }
         else
         {
             for (size_t i = 0; i < mesh.vertices.size(); i += 3)
             {
-				drawTriangle(fbo, shader, mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2], rState);
+				DrawTriangle(fbo, shader, mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2], rState);
             }
         }
     }
 
-    void RasterPipeline::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const Vertex& v0Raw, const Vertex& v1Raw, const Vertex& v2Raw, const RasterState& rState)
+    void RasterPipeline::DrawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const Vertex& v0Raw, const Vertex& v1Raw, const Vertex& v2Raw, const RasterState& rState)
     {
 		std::array<ShaderV2F, 3> v 
 		{ 
-			shader->vert(v0Raw), 
-			shader->vert(v1Raw), 
-			shader->vert(v2Raw), 
+			shader->Vert(v0Raw), 
+			shader->Vert(v1Raw), 
+			shader->Vert(v2Raw), 
 		};
 
         std::vector<ShaderV2F> clippedVerts = Clipping(v, rState);
@@ -59,16 +59,16 @@ namespace SoftRenderer
 			{
 				if (rState.rasterMethod == RasterMethod::HalfSpace)
 				{
-					RasterizerHalfSpace::drawTriangle(fbo, shader, cv0, cv1, cv2, rState);
+					RasterizerHalfSpace::DrawTriangle(fbo, shader, cv0, cv1, cv2, rState);
 				}
 				else
 				{
-					RasterizerScanline::drawTriangle(fbo, shader, cv0, cv1, cv2, rState);
+					RasterizerScanline::DrawTriangle(fbo, shader, cv0, cv1, cv2, rState);
 				}
 			}
 			if ((rState.rasterMode & RasterMode::Wireframe) != RasterMode::None)
 			{
-				RasterizerWireframe::drawTriangle(fbo, shader, cv0, cv1, cv2, rState);
+				RasterizerWireframe::DrawTriangle(fbo, shader, cv0, cv1, cv2, rState);
 			}
 		}
     }
@@ -110,11 +110,11 @@ namespace SoftRenderer
 			}
 			else if (d[i] >= 0 && d[j] < 0)
 			{
-				result.push_back(ShaderV2F::lerp(v[i], v[j], d[i] / (d[i] - d[j])));
+				result.push_back(ShaderV2F::Lerp(v[i], v[j], d[i] / (d[i] - d[j])));
 			}
 			else if (d[i] < 0 && d[j] >= 0)
 			{
-				result.push_back(ShaderV2F::lerp(v[i], v[j], d[i] / (d[i] - d[j])));
+				result.push_back(ShaderV2F::Lerp(v[i], v[j], d[i] / (d[i] - d[j])));
 				result.push_back(v[j]);
 			}
 		}
@@ -138,7 +138,7 @@ namespace SoftRenderer
     void RasterPipeline::PerspectiveCorrect(ShaderV2F& v)
     {
         v.position.w = 1.0f / v.position.w;
-        v.perspectiveCorrect(v.position.w);
+        v.PerspectiveCorrect(v.position.w);
     }
 
     void RasterPipeline::ViewPortTransform(ShaderV2F& v0, const Vec2& size)
