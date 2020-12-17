@@ -18,7 +18,7 @@ namespace SoftRenderer
     {
     public:
         static void drawTriangles(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const Mesh& mesh, const RasterState& rState);
-        static void drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const std::array<Vertex, 3>& vRaw, const RasterState& rState);
+		static void drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const Vertex& v0Raw, const Vertex& v1Raw, const Vertex& v2Raw, const RasterState& rState);
         
 	private:
         static void PerspectiveDivision(ShaderV2F& v);

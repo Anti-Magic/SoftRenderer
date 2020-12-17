@@ -16,31 +16,26 @@ namespace SoftRenderer
         {
             for (size_t i = 0; i < mesh.indices.size(); i += 3)
             {
-				std::array<Vertex, 3> vRaw{
-					mesh.vertices[mesh.indices[i]],
-					mesh.vertices[mesh.indices[i + 1]],
-					mesh.vertices[mesh.indices[i + 2]]
-				};
-                drawTriangle(fbo, shader, vRaw, rState);
+				drawTriangle(fbo, shader, mesh.vertices[mesh.indices[i]], mesh.vertices[mesh.indices[i + 1]], mesh.vertices[mesh.indices[i + 2]], rState);
             }
         }
         else
         {
             for (size_t i = 0; i < mesh.vertices.size(); i += 3)
             {
-				std::array<Vertex, 3> vRaw{
-					mesh.vertices[i], 
-					mesh.vertices[i + 1], 
-					mesh.vertices[i + 2]
-				};
-                drawTriangle(fbo, shader, vRaw, rState);
+				drawTriangle(fbo, shader, mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2], rState);
             }
         }
     }
 
-    void RasterPipeline::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const std::array<Vertex, 3>& vRaw, const RasterState& rState)
+    void RasterPipeline::drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const Vertex& v0Raw, const Vertex& v1Raw, const Vertex& v2Raw, const RasterState& rState)
     {
-		std::array<ShaderV2F, 3> v{ shader->vert(vRaw[0]), shader->vert(vRaw[1]), shader->vert(vRaw[2]) };
+		std::array<ShaderV2F, 3> v 
+		{ 
+			shader->vert(v0Raw), 
+			shader->vert(v1Raw), 
+			shader->vert(v2Raw), 
+		};
 
         std::vector<ShaderV2F> clippedVerts = Clipping(v, rState);
 
