@@ -77,6 +77,11 @@ namespace SoftRenderer
         v.position.z /= v.position.w;
     }
 
+	// Sutherland–Hodgman算法，方便切成三角扇以及保证环绕顺序
+	// 若三角形边的两个端点都在内侧，则将第二个顶点加入到输出列表
+	// 若三角形边的第一个端点在内侧而第二个端点在外侧，则将交点加入到输出列表
+	// 若三角形边的第一个端点在外侧而第二个端点在内侧，则将交点以及第二个顶点依次加入到输出列表
+	// 若三角形边的两个端点都在外侧，则什么都不做。
     std::vector<ShaderV2F> RasterPipeline::Clipping(const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2, const RasterState& rState)
     {
         if (!rState.enableClipping)
@@ -84,69 +89,33 @@ namespace SoftRenderer
             return std::vector<ShaderV2F> {v0, v1, v2};
         }
 
-        // 近面裁剪
+        // 只对近裁面做裁剪
         ClippingPlane near(Vec3(0, 0, 1), 0);
         float d0 = near.DistanceFromPoint4(v0.position);
         float d1 = near.DistanceFromPoint4(v1.position);
         float d2 = near.DistanceFromPoint4(v2.position);
-        int insideCount = 0;
-        if (d0 >= 0) insideCount += 1;
-        if (d1 >= 0) insideCount += 1;
-        if (d2 >= 0) insideCount += 1;
 
-        if (insideCount == 0)
-        {
-            // 直接剔除
-            return std::vector<ShaderV2F> { };
-        }
-        else if (insideCount == 1)
-        {
-            // 裁成1个新的三角形
-            if (d0 >= 0)
-            {
-                ShaderV2F v1s = ShaderV2F::lerp(v0, v1, d0 / (d0 - d1));
-                ShaderV2F v2s = ShaderV2F::lerp(v0, v2, d0 / (d0 - d2));
-                return std::vector<ShaderV2F> {v0, v1s, v2s};
-            }
-            else if (d1 >= 0)
-            {
-                ShaderV2F v0s = ShaderV2F::lerp(v1, v0, d1 / (d1 - d0));
-                ShaderV2F v2s = ShaderV2F::lerp(v1, v2, d1 / (d1 - d2));
-                return std::vector<ShaderV2F> {v0s, v1, v2s};
-            }
-            else if (d2 >= 0)
-            {
-                ShaderV2F v0s = ShaderV2F::lerp(v2, v0, d2 / (d2 - d0));
-                ShaderV2F v1s = ShaderV2F::lerp(v2, v1, d2 / (d2 - d1));
-                return std::vector<ShaderV2F> {v0s, v1s, v2};
-            }
-        }
-        else if (insideCount == 2)
-        {
-            if (d0 < 0)
-            {
-                ShaderV2F v1s = ShaderV2F::lerp(v0, v1, d0 / (d0 - d1));
-                ShaderV2F v2s = ShaderV2F::lerp(v0, v2, d0 / (d0 - d2));
-                return std::vector<ShaderV2F> {v1s, v1, v2, v2s};
-            }
-            else if (d1 < 0)
-            {
-                ShaderV2F v0s = ShaderV2F::lerp(v1, v0, d1 / (d1 - d0));
-                ShaderV2F v2s = ShaderV2F::lerp(v1, v2, d1 / (d1 - d2));
-                return std::vector<ShaderV2F> {v2s, v2, v0, v0s};
-            }
-            else if (d2 < 0)
-            {
-                ShaderV2F v0s = ShaderV2F::lerp(v2, v0, d2 / (d2 - d0));
-                ShaderV2F v1s = ShaderV2F::lerp(v2, v1, d2 / (d2 - d1));
-                return std::vector<ShaderV2F> {v0s, v0, v1, v1s};
-            }
-        }
-        else
-        {
-            // 无需裁剪
-            return std::vector<ShaderV2F> {v0, v1, v2};
-        }
+		std::vector<ShaderV2F> result;
+		std::array<ShaderV2F, 3> v { v0, v1, v2 };
+		std::array<float, 3> d { d0, d1, d2 };
+		for (int i = 0; i < 3; i++)
+		{
+			int j = (i + 1) % 3;
+			if (d[i] >= 0 && d[j] >= 0)
+			{
+				result.push_back(v[j]);
+			}
+			else if (d[i] >= 0 && d[j] < 0)
+			{
+				result.push_back(ShaderV2F::lerp(v[i], v[j], d[i] / (d[i] - d[j])));
+			}
+			else if (d[i] < 0 && d[j] >= 0)
+			{
+				result.push_back(ShaderV2F::lerp(v[i], v[j], d[i] / (d[i] - d[j])));
+				result.push_back(v[j]);
+			}
+		}
+		return result;
     }
 
     bool RasterPipeline::Culling(const ShaderV2F& v0, const ShaderV2F& v1, const ShaderV2F& v2, const RasterState& rState)

@@ -20,6 +20,7 @@ namespace SoftRenderer
         static void drawTriangles(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const Mesh& mesh, const RasterState& rState);
         static void drawTriangle(FrameBuffer& fbo, std::unique_ptr<Shader>& shader, const Vertex& v0Raw, const Vertex& v1Raw, const Vertex& v2Raw, const RasterState& rState);
         
+	private:
         static void PerspectiveDivision(ShaderV2F& v);
         static void PerspectiveCorrect(ShaderV2F& v);
         static void ViewPortTransform(ShaderV2F& v, const Vec2& size);
