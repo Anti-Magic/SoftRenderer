@@ -104,7 +104,7 @@ namespace SoftRenderer
 
             device->frameBuffer.clear(Vec4(0, 0, 0, 1));
             rState.enableDepthWrite = false;
-            RasterPipeline::drawTriangles(device->frameBuffer, skybox.shader, skybox.mesh, rState);
+            //RasterPipeline::drawTriangles(device->frameBuffer, skybox.shader, skybox.mesh, rState);
             rState.enableDepthWrite = true;
             RasterPipeline::drawTriangles(device->frameBuffer, box.shader, box.mesh, rState);
             RasterPipeline::drawTriangles(device->frameBuffer, plane.shader, plane.mesh, rState);
@@ -134,6 +134,12 @@ namespace SoftRenderer
                 ImGui::SameLine();
                 ImGui::Checkbox("Wireframe", &enableRasterModeWireframe);
             }
+			if (ImGui::CollapsingHeader("RasterMethod", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::RadioButton("HalfSpace", (int*)&rState.rasterMethod, 0);
+				ImGui::SameLine();
+				ImGui::RadioButton("Scanline", (int*)&rState.rasterMethod, 1);
+			}
             if (ImGui::CollapsingHeader("ClippingAndCulling", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 ImGui::Checkbox("BackFaceCulling", &enableBackFaceCulling);

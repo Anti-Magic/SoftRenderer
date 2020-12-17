@@ -90,13 +90,13 @@
     <ClCompile Include="RasterizerScanline.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="RasterizerBaryCoord.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="ClippingPlane.cpp">
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="RasterState.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizerHalfSpace.cpp">
       <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -182,9 +182,6 @@
     <ClInclude Include="RasterizerScanline.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="RasterizerBaryCoord.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="ClippingPlane.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -192,6 +189,9 @@
       <Filter>shader</Filter>
     </ClInclude>
     <ClInclude Include="RasterState.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizerHalfSpace.h">
       <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>

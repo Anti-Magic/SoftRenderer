@@ -83,6 +83,12 @@ namespace SoftRenderer
                 ImGui::SameLine();
                 ImGui::Checkbox("Wireframe", &enableRasterModeWireframe);
             }
+			if (ImGui::CollapsingHeader("RasterMethod", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::RadioButton("HalfSpace", (int*)&rState.rasterMethod, 0);
+				ImGui::SameLine();
+				ImGui::RadioButton("Scanline", (int*)&rState.rasterMethod, 1);
+			}
             if (ImGui::CollapsingHeader("ClippingAndCulling", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 ImGui::Checkbox("BackFaceCulling", &enableBackFaceCulling);
@@ -97,6 +103,7 @@ namespace SoftRenderer
             {
                 rState.rasterMode &= ~RasterMode::Fill;
             }
+
             if (enableRasterModeWireframe)
             {
                 rState.rasterMode |= RasterMode::Wireframe;
@@ -105,6 +112,7 @@ namespace SoftRenderer
             {
                 rState.rasterMode &= ~RasterMode::Wireframe;
             }
+
             if (enableBackFaceCulling)
             {
                 rState.cullType = FaceCulling::Back;

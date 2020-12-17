@@ -12,6 +12,12 @@ namespace SoftRenderer
 		All = 3,
 	};
 
+	enum class RasterMethod : int
+	{
+		HalfSpace = 0,
+		Scanline = 1,
+	};
+
 	RasterMode operator&(RasterMode a, RasterMode b);
 	RasterMode operator|(RasterMode a, RasterMode b);
 	RasterMode operator~(RasterMode a);
@@ -32,6 +38,7 @@ namespace SoftRenderer
 		bool enableDepthWrite;
 		bool enableClipping;
 		RasterMode rasterMode;
+		RasterMethod rasterMethod;
 		FaceCulling cullType;
 
 		RasterState();

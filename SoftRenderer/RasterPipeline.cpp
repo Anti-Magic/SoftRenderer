@@ -4,7 +4,7 @@
 #include "Mesh.h"
 #include "ClippingPlane.h"
 #include "RasterizerScanline.h"
-#include "RasterizerBaryCoord.h"
+#include "RasterizerHalfSpace.h"
 #include "RasterizerWireframe.h"
 #include "RasterState.h"
 
@@ -35,10 +35,6 @@ namespace SoftRenderer
         ShaderV2F v2 = shader->vert(v2Raw);
 
         std::vector<ShaderV2F> clippedVerts = Clipping(v0, v1, v2, rState);
-        if (clippedVerts.size() < 3)
-        {
-            return;
-        }
 
         for (auto& v : clippedVerts)
         {
@@ -47,7 +43,7 @@ namespace SoftRenderer
             ViewPortTransform(v, fbo.size);
         }
 
-        for (int i = 0; i < clippedVerts.size(); i += 3)
+        for (int i = 0; i + 1 < clippedVerts.size(); i += 2)
         {
             auto& cv0 = clippedVerts[i];
             auto& cv1 = clippedVerts[i + 1];
@@ -58,11 +54,18 @@ namespace SoftRenderer
             }
             if ((rState.rasterMode & RasterMode::Fill) != RasterMode::None)
             {
-                RasterizerScanline::drawTriangle(fbo, shader, cv0, cv1, cv2, rState);
+				if (rState.rasterMethod == RasterMethod::HalfSpace)
+				{
+					RasterizerHalfSpace::drawTriangle(fbo, shader, cv0, cv1, cv2, rState);
+				}
+				else
+				{
+					RasterizerScanline::drawTriangle(fbo, shader, cv0, cv1, cv2, rState);
+				}
             }
             if ((rState.rasterMode & RasterMode::Wireframe) != RasterMode::None)
             {
-                //RasterizerWireframe::drawTriangle(fbo, shader, clippedVerts[0], clippedVerts[1], clippedVerts[2], rState);
+                RasterizerWireframe::drawTriangle(fbo, shader, clippedVerts[0], clippedVerts[1], clippedVerts[2], rState);
             }
         }
     }

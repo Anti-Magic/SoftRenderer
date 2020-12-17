@@ -21,6 +21,11 @@ namespace SoftRenderer
 		return (*this) * inv;
 	}
 
+	float Vec2::cross(const Vec2& v) const
+	{
+		return x * v.y - y * v.x;
+	}
+
 	Vec2 operator+(const Vec2& left, const Vec2& right)
 	{
 		return Vec2(left.x + right.x, left.y + right.y);

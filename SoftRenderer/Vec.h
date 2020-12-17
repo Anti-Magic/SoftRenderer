@@ -18,6 +18,8 @@ namespace SoftRenderer
 		float magnitude();
 		Vec2 normalize();
 
+		float cross(const Vec2& v) const;
+
 		friend Vec2 operator+(const Vec2& left, const Vec2& right);
 		friend Vec2 operator-(const Vec2& left, const Vec2& right);
 		friend Vec2 operator*(const Vec2& left, const Vec2& right);
