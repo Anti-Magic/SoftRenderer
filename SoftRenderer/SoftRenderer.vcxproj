@@ -161,6 +161,7 @@
     <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mat.cpp" />
+    <ClCompile Include="MeshPrimitive.cpp" />
     <ClCompile Include="Quat.cpp" />
     <ClCompile Include="RasterizerHalfSpace.cpp" />
     <ClCompile Include="RasterizerScanline.cpp" />

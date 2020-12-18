@@ -128,65 +128,65 @@ namespace SoftRenderer
         float cameraRotV;
         void UpdateCameraTransform(float dt)
         {
-            if (device->isKeyPressed(KeyCode::W))
+            if (device->IsKeyPressed(KeyCode::W))
             {
                 camera.SetPos(camera.GetPos() + camera.Forward() * dt);
             }
-            if (device->isKeyPressed(KeyCode::S))
+            if (device->IsKeyPressed(KeyCode::S))
             {
                 camera.SetPos(camera.GetPos() - camera.Forward() * dt);
             }
-            if (device->isKeyPressed(KeyCode::A))
+            if (device->IsKeyPressed(KeyCode::A))
             {
                 camera.SetPos(camera.GetPos() - camera.Right() * dt);
             }
-            if (device->isKeyPressed(KeyCode::D))
+            if (device->IsKeyPressed(KeyCode::D))
             {
                 camera.SetPos(camera.GetPos() + camera.Right() * dt);
             }
-            if (device->isKeyPressed(KeyCode::Q))
+            if (device->IsKeyPressed(KeyCode::Q))
             {
                 camera.SetPos(camera.GetPos() - camera.Up() * dt);
             }
-            if (device->isKeyPressed(KeyCode::E))
+            if (device->IsKeyPressed(KeyCode::E))
             {
                 camera.SetPos(camera.GetPos() + camera.Up() * dt);
             }
 
-            /*if (device->isKeyPressed(KeyCode::W))
+            /*if (device->IsKeyPressed(KeyCode::W))
             {
                 camera.SetPos(camera.GetPos() + Vec3(0, 0, 1) * dt);
             }
-            if (device->isKeyPressed(KeyCode::S))
+            if (device->IsKeyPressed(KeyCode::S))
             {
                 camera.SetPos(camera.GetPos() - Vec3(0, 0, 1) * dt);
             }
-            if (device->isKeyPressed(KeyCode::A))
+            if (device->IsKeyPressed(KeyCode::A))
             {
                 camera.SetPos(camera.GetPos() - Vec3(1, 0, 0) * dt);
             }
-            if (device->isKeyPressed(KeyCode::D))
+            if (device->IsKeyPressed(KeyCode::D))
             {
                 camera.SetPos(camera.GetPos() + Vec3(1, 0, 0) * dt);
             }
-            if (device->isKeyPressed(KeyCode::Q))
+            if (device->IsKeyPressed(KeyCode::Q))
             {
                 camera.SetPos(camera.GetPos() - Vec3(0, 1, 0) * dt);
             }
-            if (device->isKeyPressed(KeyCode::E))
+            if (device->IsKeyPressed(KeyCode::E))
             {
                 camera.SetPos(camera.GetPos() + Vec3(0, 1, 0) * dt);
             }*/
 
-            if (device->isMousePressed(MouseButton::Left))
+            if (device->IsMousePressed(MouseButton::Left))
             {
                 if (mousePosLast.x < 0)
                 {
-                    mousePosLast = device->getMousePos();
+                    mousePosLast = device->GetMousePos();
                 }
                 else
                 {
-                    Vec2 dlt = device->getMousePos() - mousePosLast;
+                    Vec2 dlt = device->GetMousePos() - mousePosLast;
                     cameraRotH = fmod(cameraRotH + dlt.x * dt * PI * 0.05f, 2.0f * PI);
                     cameraRotV = fmod(cameraRotV + dlt.y * dt * PI * 0.05f, 2.0f * PI);
                     camera.SetRot(Quat::fromAxisAngle(Vec3(0, 1, 0), cameraRotH) * Quat::fromAxisAngle(Vec3(1, 0, 0), cameraRotV));
@@ -194,7 +194,7 @@ namespace SoftRenderer
                         * Quat::fromAxisAngle(Vec3(0, 1, 0), dlt.x * dt * PI * 0.05f)
                         * Quat::fromAxisAngle(Vec3(1, 0, 0), dlt.y * dt * PI * 0.05f)
                     );*/
-                    mousePosLast = device->getMousePos();
+                    mousePosLast = device->GetMousePos();
                 }
             }
             else

@@ -99,6 +99,9 @@
     <ClCompile Include="RasterizerHalfSpace.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="MeshPrimitive.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vec.h">

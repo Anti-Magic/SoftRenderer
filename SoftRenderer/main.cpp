@@ -63,9 +63,9 @@ public:
         , height(_height)
         , buffer(new uint8_t[_width * _height * 4])
     {
-        initShader();
-        initMesh();
-        initTexture();
+        InitShader();
+        InitMesh();
+        InitTexture();
     }
 
     TextureRenderer(const TextureRenderer&) = delete;
@@ -79,7 +79,7 @@ public:
         glDeleteTextures(1, &textureID);
     }
 
-    void render(const std::vector<float>& src)
+    void Render(const std::vector<float>& src)
     {
         // bind textures on corresponding texture units
         glActiveTexture(GL_TEXTURE0);
@@ -105,10 +105,10 @@ public:
     }
 
 private:
-    bool initShader()
+    bool InitShader()
     {
-        std::string vShaderCode = vertShaderCode();
-        std::string fShaderCode = fragShaderCode();
+        std::string vShaderCode = VertShaderCode();
+        std::string fShaderCode = FragShaderCode();
         const char* vShaderCodeC = vShaderCode.c_str();
         const char* fShaderCodeC = fShaderCode.c_str();
         GLint success;
@@ -153,7 +153,7 @@ private:
         return true;
     }
 
-    void initMesh()
+    void InitMesh()
     {
         float vertices[] = {
             // positions         // texture coords
@@ -186,7 +186,7 @@ private:
         glEnableVertexAttribArray(1);
     }
 
-    void initTexture()
+    void InitTexture()
     {
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
@@ -201,7 +201,7 @@ private:
         glUniform1i(glGetUniformLocation(shaderID, "tex"), 0);
     }
 
-    std::string vertShaderCode()
+    std::string VertShaderCode()
     {
         return R"(#version 330 core
 layout (location = 0) in vec3 aPos;
@@ -215,7 +215,7 @@ void main()
 )";
     }
 
-    std::string fragShaderCode()
+    std::string FragShaderCode()
     {
         return R"(#version 330 core
 out vec4 FragColor;
@@ -331,7 +331,7 @@ int main(int argc, char* argv[])
     std::shared_ptr<Device> device = std::make_shared<Device>(Vec2(width, height));
     device->LoadTexture2D = LoadTexture2D;
     device->LoadMesh = LoadMesh;
-    device->setScene(std::make_shared<SceneTest>(device));
+    device->SetScene(std::make_shared<SceneTest>(device));
 
     // main loop
     uint32_t lastTime = SDL_GetTicks();
@@ -355,23 +355,23 @@ int main(int argc, char* argv[])
             }
             else if (event.type == SDL_KEYDOWN)
             {
-                device->onKeyDown(SDLKeyConvert(event.key.keysym.sym));
+                device->OnKeyDown(SDLKeyConvert(event.key.keysym.sym));
             }
             else if (event.type == SDL_KEYUP)
             {
-                device->onKeyUp(SDLKeyConvert(event.key.keysym.sym));
+                device->OnKeyUp(SDLKeyConvert(event.key.keysym.sym));
             }
             else if (event.type == SDL_MOUSEBUTTONDOWN)
             {
-                device->onMouseDown(SDLMouseConvert(event.button.button));
+                device->OnMouseDown(SDLMouseConvert(event.button.button));
             }
             else if (event.type == SDL_MOUSEBUTTONUP)
             {
-                device->onMouseUp(SDLMouseConvert(event.button.button));
+                device->OnMouseUp(SDLMouseConvert(event.button.button));
             }
             else if (event.type == SDL_MOUSEMOTION)
             {
-                device->onMouseMotion(Vec2(event.motion.x, event.motion.y));
+                device->OnMouseMotion(Vec2(event.motion.x, event.motion.y));
             }
         }
 
@@ -383,12 +383,12 @@ int main(int argc, char* argv[])
         uint32_t now = SDL_GetTicks();
         float deltaTime = (now - lastTime) / 1000.0f;
         lastTime = now;
-        device->loop(deltaTime);
+        device->Loop(deltaTime);
 
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        tr.render(device->frameBuffer.color->d);
+        tr.Render(device->frameBuffer.color->d);
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

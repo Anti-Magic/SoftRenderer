@@ -15,13 +15,13 @@ namespace SoftRenderer
 		memset(mousePressed, 0, (size_t)MouseButton::size);
 	}
 
-	void Device::setScene(std::shared_ptr<Scene> _scene)
+	void Device::SetScene(std::shared_ptr<Scene> _scene)
 	{
 		scene = _scene;
 		scene->Start();
 	}
 
-	void Device::loop(float dt)
+	void Device::Loop(float dt)
 	{
 		if (scene != nullptr)
 		{
@@ -34,66 +34,66 @@ namespace SoftRenderer
 		memset(mouseUp, 0, (size_t)MouseButton::size);
 	}
 
-	bool Device::isKeyPressed(KeyCode key)
+	bool Device::IsKeyPressed(KeyCode key)
 	{
 		return keyPressed[(size_t)key] == 1;
 	}
 
-	bool Device::isKeyDown(KeyCode key)
+	bool Device::IsKeyDown(KeyCode key)
 	{
 		return keyDown[(size_t)key] == 1;
 	}
 
-	bool Device::isKeyUp(KeyCode key)
+	bool Device::IsKeyUp(KeyCode key)
 	{
 		return keyUp[(size_t)key] == 1;
 	}
 
-	bool Device::isMousePressed(MouseButton b)
+	bool Device::IsMousePressed(MouseButton b)
 	{
 		return mousePressed[(size_t)b] == 1;
 	}
 
-	bool Device::isMouseDown(MouseButton b)
+	bool Device::IsMouseDown(MouseButton b)
 	{
 		return mouseDown[(size_t)b] == 1;
 	}
 
-	bool Device::isMouseUp(MouseButton b)
+	bool Device::IsMouseUp(MouseButton b)
 	{
 		return mouseUp[(size_t)b] == 1;
 	}
 
-	Vec2 Device::getMousePos()
+	Vec2 Device::GetMousePos()
 	{
 		return mousePos;
 	}
 
-	void Device::onKeyDown(KeyCode key)
+	void Device::OnKeyDown(KeyCode key)
 	{
 		keyDown[(size_t)key] = 1;
 		keyPressed[(size_t)key] = 1;
 	}
 
-	void Device::onKeyUp(KeyCode key)
+	void Device::OnKeyUp(KeyCode key)
 	{
 		keyUp[(size_t)key] = 1;
 		keyPressed[(size_t)key] = 0;
 	}
 
-	void Device::onMouseDown(MouseButton b)
+	void Device::OnMouseDown(MouseButton b)
 	{
 		mouseDown[(size_t)b] = 1;
 		mousePressed[(size_t)b] = 1;
 	}
 
-	void Device::onMouseUp(MouseButton b)
+	void Device::OnMouseUp(MouseButton b)
 	{
 		mouseUp[(size_t)b] = 1;
 		mousePressed[(size_t)b] = 0;
 	}
 
-	void Device::onMouseMotion(const Vec2& pos)
+	void Device::OnMouseMotion(const Vec2& pos)
 	{
 		mousePos = pos;
 	}

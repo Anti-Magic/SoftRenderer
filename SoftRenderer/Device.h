@@ -50,22 +50,22 @@ namespace SoftRenderer
 		std::function<std::shared_ptr<Texture2D>(const std::string&, bool isFlipY)> LoadTexture2D;
 		std::function<Mesh(const std::string&)> LoadMesh;
 
-		void setScene(std::shared_ptr<Scene> _scene);
-		void loop(float dt);
+		void SetScene(std::shared_ptr<Scene> _scene);
+		void Loop(float dt);
 		
-		bool isKeyPressed(KeyCode key);
-		bool isKeyDown(KeyCode key);
-		bool isKeyUp(KeyCode key);
-		bool isMousePressed(MouseButton b);
-		bool isMouseDown(MouseButton b);
-		bool isMouseUp(MouseButton b);
-		Vec2 getMousePos();
+		bool IsKeyPressed(KeyCode key);
+		bool IsKeyDown(KeyCode key);
+		bool IsKeyUp(KeyCode key);
+		bool IsMousePressed(MouseButton b);
+		bool IsMouseDown(MouseButton b);
+		bool IsMouseUp(MouseButton b);
+		Vec2 GetMousePos();
 
-		void onKeyDown(KeyCode key);
-		void onKeyUp(KeyCode key);
-		void onMouseDown(MouseButton b);
-		void onMouseUp(MouseButton b);
-		void onMouseMotion(const Vec2& pos);
+		void OnKeyDown(KeyCode key);
+		void OnKeyUp(KeyCode key);
+		void OnMouseDown(MouseButton b);
+		void OnMouseUp(MouseButton b);
+		void OnMouseMotion(const Vec2& pos);
 
 	private:
 		uint8_t keyDown[(size_t)KeyCode::size];
