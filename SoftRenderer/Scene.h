@@ -22,7 +22,11 @@ namespace SoftRenderer
         {
         }
 
-        void stop()
+		virtual void OnGUI(float dt)
+		{
+		}
+
+        void OnDestroy()
         {
         }
     };

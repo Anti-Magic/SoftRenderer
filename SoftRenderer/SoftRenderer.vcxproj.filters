@@ -197,5 +197,8 @@
     <ClInclude Include="RasterizerHalfSpace.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="SceneSponza.h">
+      <Filter>example</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

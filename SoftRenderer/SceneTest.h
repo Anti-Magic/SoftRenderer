@@ -104,7 +104,7 @@ namespace SoftRenderer
 
             device->frameBuffer.Clear(Vec4(0, 0, 0, 1));
             rState.enableDepthWrite = false;
-            //RasterPipeline::DrawTriangles(device->frameBuffer, skybox.shader, skybox.mesh, rState);
+            RasterPipeline::DrawTriangles(device->frameBuffer, skybox.shader, skybox.mesh, rState);
             rState.enableDepthWrite = true;
             RasterPipeline::DrawTriangles(device->frameBuffer, box.shader, box.mesh, rState);
             RasterPipeline::DrawTriangles(device->frameBuffer, plane.shader, plane.mesh, rState);
@@ -117,14 +117,12 @@ namespace SoftRenderer
             //RasterPipeline::DrawTriangles(device->frameBuffer, skybox.shader, skybox.mesh, rState);
 
             //ScreenPostProcesser::render(fboDepth, device->frameBuffer, ScreenPostProcesser::defaultShader);
-
-            OnGUI(dt);
         }
     
         bool enableRasterModeFill = true;
         bool enableRasterModeWireframe = false;
         bool enableBackFaceCulling = true;
-        void OnGUI(float dt)
+        void OnGUI(float dt) override
         {
             ImGui::Begin("Debug");
             ImGui::Text("Average %.3f ms/frame (%.1f FPS)", dt * 1000, 1.0f / dt);

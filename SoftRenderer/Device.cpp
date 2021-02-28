@@ -26,6 +26,7 @@ namespace SoftRenderer
 		if (scene != nullptr)
 		{
 			scene->Update(dt);
+			scene->OnGUI(dt);
 		}
 
 		memset(keyDown, 0, (size_t)KeyCode::size);

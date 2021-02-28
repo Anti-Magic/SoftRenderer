@@ -2,15 +2,19 @@
 #include <string>
 #include <vector>
 #include <glad/glad.h>
-#include "SDL.h"
-#include "SDL_image.h"
-#include "imgui.h"
-#include "imgui_impl_sdl.h"
-#include "imgui_impl_opengl3.h"
+#include <SDL.h>
+#include <SDL_image.h>
+#include <imgui.h>
+#include <imgui_impl_sdl.h>
+#include <imgui_impl_opengl3.h>
+//#define TINYOBJLOADER_IMPLEMENTATION
+//#include <tiny_obj_loader.h>
+
 #include "Mathf.h"
 #include "Device.h"
 #include "SceneTest.h"
 #include "SceneTest2.h"
+#include "SceneSponza.h"
 
 using namespace SoftRenderer;
 
